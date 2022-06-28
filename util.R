@@ -1,7 +1,11 @@
+# Utilities for working with Census data
+#
+# Contact: Edgar Castro <edgar_castro@g.harvard.edu>
+
 library(data.table)
 library(pbapply)
 library(tidycensus)
-library(tidyr)
+library(tools)
 
 # Setup -------------------------------------------------------------------
 
@@ -39,6 +43,7 @@ rhs_variables <- function(f) {
   return(all.vars(rhs(f)))
 }
 
+# Retrieve a list of available variables from the Census API via tidycensus
 get_variables_cached <- function(year, dataset) {
   cache_directory <- file.path(TIDYCENSUS_CACHE, dataset, year)
   dir.create(cache_directory, showWarnings = FALSE, recursive = TRUE)
@@ -52,7 +57,7 @@ get_variables_cached <- function(year, dataset) {
   }
 }
 
-# Retrieve data from the Census API via tidycensus, caching tables
+# Retrieve data from the Census API via tidycensus
 get_tidycensus_cached <- function(geography, year, dataset, needed_variables,
                                   states = STATES_DC_FIPS) { # TODO: check if states= agrees with the last run
   cache_directory <- file.path(TIDYCENSUS_CACHE, dataset, year, geography)
@@ -155,6 +160,9 @@ get_tidycensus_cached <- function(geography, year, dataset, needed_variables,
   return(data)
 }
 
+# census_fetch_function should be a function returning a data.frame-like object
+# with the GEOIDs in the first column and all other specified variables in other
+# columns
 get_census <- function(geography, year, dataset, formulas,
                        census_fetch_function = get_tidycensus_cached,
                        states = STATES_DC_FIPS) {
@@ -178,66 +186,25 @@ get_census <- function(geography, year, dataset, formulas,
   return(result)
 }
 
-get_census(
-  geography = "block group",
-  dataset = "acs5",
-  year = 2019,
-  formulas = c(
-    population ~ B01001_001,
-    pct_female ~ B01001_026 / B01001_001,
-    pct_white ~ B02001_002 / B01001_001,
-    pct_black ~ B02001_003 / B01001_001,
-    pct_native ~ B02001_004 / B01001_001,
-    pct_asian ~ B02001_005 / B01001_001,
-    pct_two_or_more_races ~ B02001_008 / B01001_001,
-    pct_hispanic_white ~ B03002_013 / B01001_001,
-    pct_hispanic_black ~ B03002_014 / B01001_001,
-    pct_hispanic_native ~ B03002_015 / B01001_001,
-    pct_hispanic_asian ~ B03002_016 / B01001_001,
-    pct_hispanic_two_or_more_races ~ B03002_019 / B01001_001,
-    pct_non_hispanic_white ~ B03002_003 / B01001_001,
-    pct_non_hispanic_black ~ B03002_004 / B01001_001,
-    pct_non_hispanic_native ~ B03002_005 / B01001_001,
-    pct_non_hispanic_asian ~ B03002_006 / B01001_001,
-    pct_non_hispanic_two_or_more_races ~ B03002_009 / B01001_001,
-    pct_hispanic ~ B03002_012 / B01001_001,
-    pct_foreign_born ~ B05006_001 / B01001_001,
-    
-    # Compatibility with 1990 Decennial Census
-    pct_pacific_islander ~ (B02001_005 + B02001_006) / B01001_001,
-    pct_hispanic_pacific_islander ~ (B03002_016 + B03002_017) / B01001_001,
-    pct_non_hispanic_pacific_islander ~ (B03002_006 + B03002_007) / B01001_001
+# Fill in variables from a formula using definitions from the Census
+explain <- function(year, dataset, formula, width = NULL) {
+  variables <- get_variables_cached(year, dataset)
+  result <- format(formula, width = width)
+  sapply(
+    rhs_variables(formula),
+    function(variable) {
+      definition <- subset(variables, name == variable)
+      label <- sprintf(
+        "%s$%s",
+        toTitleCase(tolower(definition[["concept"]])),
+        definition[["label"]]
+      )
+      label <- gsub("Estimate!!", "", label)
+      label <- gsub(":$", "", label)
+      label <- gsub(":*!!", "$", label)
+      label <- sprintf("[%s]", label)
+      result <<- gsub(variable, label, result, fixed = TRUE)
+    }
   )
-)
-
-get_census(
-  geography = "block group",
-  dataset = "acs5",
-  year = 2019,
-  formulas = c(
-    n_households ~ B11001_001,
-    mean_household_size ~ B25010_001,
-    pct_households_single_father ~ B11001_005 / B11001_001,
-    pct_households_single_mother ~ B11001_006 / B11001_001,
-    pct_public_assistance ~ B19057_002 / B11001_001
-  )
-)
-
-get_census(
-  geography = "block group",
-  dataset = "acs5",
-  year = 2020,
-  formulas = c(
-    n_occupied_housing_units ~ B25003_001,
-    pct_renting ~ B25003_003 / B25003_001,
-    pct_heating_utility_gas ~ B25040_002 / B25003_001,
-    pct_heating_gas_tank ~ B25040_003 / B25003_001,
-    pct_heating_electricity ~ B25040_004 / B25003_001,
-    pct_heating_oil ~ B25040_005 / B25003_001,
-    pct_heating_coal ~ B25040_006 / B25003_001,
-    pct_heating_wood ~ B25040_007 / B25003_001,
-    pct_heating_solar ~ B25040_008 / B25003_001,
-    pct_heating_other ~ B25040_009 / B25003_001,
-    pct_heating_none ~ B25040_001 / B25003_001
-  )
-)
+  return(result)
+}
