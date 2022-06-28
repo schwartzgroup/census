@@ -1,0 +1,4 @@
+.Rproj.user/
+cache/
+*.Rproj
+api_key.txt
