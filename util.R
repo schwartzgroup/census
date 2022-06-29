@@ -9,10 +9,18 @@ library(tools)
 
 # Setup -------------------------------------------------------------------
 
+# Path to save tidycensus results to
 TIDYCENSUS_CACHE <- "cache/tidycensus"
 
+# Path where the Census API key will be loaded from
 API_KEY_FILE <- "api_key.txt"
 
+# Geographies that do not require a state to be specified
+GEOGRAPHIES_NO_STATE <- c(
+  "us", "region", "state", "county", "division", "zip code tabulation area", "zcta"
+)
+
+# FIPS codes for the 50 states + DC
 STATES_DC_FIPS <- c(
   "01", "02", "04", "05", "06", "08", "09", "10", "11", "12", "13", "15", "16",
   "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
@@ -135,18 +143,29 @@ get_tidycensus_cached <- function(geography,
   # Retrieve new data
   if (length(variables_to_fetch) > 0) {
     message("Fetching new data")
-    new_data <- dcast(
-      rbindlist(pblapply(
-        states,
-        function(state) {
-          suppressMessages(fetch_function(
-            geography, variables_to_fetch, year = year, state = state
-          ))
-        }
-      )),
-      GEOID ~ variable,
-      value.var = value_column
-    )
+  
+    if (geography %in% GEOGRAPHIES_NO_STATE) {
+      new_data <- dcast(
+        as.data.table(suppressMessages(fetch_function(
+            geography, variables_to_fetch, year = year
+        ))),
+        GEOID ~ variable,
+        value.var = value_column
+      )
+    } else {
+      new_data <- dcast(
+        rbindlist(pblapply(
+          states,
+          function(state) {
+            suppressMessages(fetch_function(
+              geography, variables_to_fetch, year = year, state = state
+            ))
+          }
+        )),
+        GEOID ~ variable,
+        value.var = value_column
+      )
+    }
     
     # Cache new data
     message("Caching new data")
