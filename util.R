@@ -29,7 +29,7 @@ if (file.exists(API_KEY_FILE)) {
 
 pboptions(type = "timer")
 
-# Functions ---------------------------------------------------------------
+# Retrieval functions -----------------------------------------------------
 
 lhs <- function(f) {
   return(f[[2]])
@@ -59,9 +59,13 @@ get_variables_cached <- function(year, dataset) {
 }
 
 # Retrieve data from the Census API via tidycensus
-get_tidycensus_cached <- function(geography, year, dataset, needed_variables,
+get_tidycensus_cached <- function(geography,
+                                  year,
+                                  dataset, # "acs5" / "sf1" / "sf3"
+                                  needed_variables,
                                   states = STATES_DC_FIPS, # TODO: check if states= agrees with the last run
-                                  check_variables = TRUE) { 
+                                  check_variables = TRUE
+                                  ) { 
   cache_directory <- file.path(TIDYCENSUS_CACHE, dataset, year, geography)
   dir.create(cache_directory, showWarnings = FALSE, recursive = TRUE)
   
@@ -91,10 +95,15 @@ get_tidycensus_cached <- function(geography, year, dataset, needed_variables,
   
   # Function used for fetching
   if (dataset == "acs5") {
-    fetch_function <- get_acs
+    fetch_function <- function(...) {
+      return(get_acs(..., survey = dataset))
+    }
     value_column <- "estimate"
   } else {
     fetch_function <- get_decennial
+    fetch_function <- function(...) {
+      return(get_decennial(..., sumfile = dataset))
+    }
     value_column <- "value"
   }
   
@@ -171,10 +180,10 @@ get_tidycensus_cached <- function(geography, year, dataset, needed_variables,
 # columns
 get_census <- function(geography, year, dataset, formulas,
                        census_fetch_function = get_tidycensus_cached,
-                       states = STATES_DC_FIPS) {
+                       states = STATES_DC_FIPS, ...) {
   needed_variables <- unique(unlist(lapply(formulas, rhs_variables)))
   
-  data <- census_fetch_function(geography, year, dataset, needed_variables)
+  data <- census_fetch_function(geography, year, dataset, needed_variables, ...)
   
   result <- data.frame(GEOID = data[["GEOID"]])
   
