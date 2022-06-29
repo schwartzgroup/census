@@ -17,7 +17,9 @@ API_KEY_FILE <- "api_key.txt"
 
 # Geographies that do not require a state to be specified
 GEOGRAPHIES_NO_STATE <- c(
-  "us", "region", "state", "county", "division", "zip code tabulation area", "zcta"
+  "us", "region", "state", "county", "division", "place",
+  "combined statistical area", "congressional district", "urban area",
+  "public use microdata area", "zip code tabulation area", "zcta"
 )
 
 # FIPS codes for the 50 states + DC
