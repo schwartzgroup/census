@@ -1,10 +1,12 @@
+#!/usr/bin/env Rscript
+
 source("util.R")
 
 # Formulas ----------------------------------------------------------------
 
-## SF1 ----
+## SF1 (2000) ----
 
-all_formulas_sf1 <- list(
+all_formulas_sf1_2000 <- list(
   
   # Universe: Total population
   total_population = c(
@@ -16,7 +18,7 @@ all_formulas_sf1 <- list(
     pct_black ~ P003004 / P001001,
     pct_native ~ P003005 / P001001,
     pct_asian ~ P003006 / P001001,
-    pct_two_or_more_races ~ P003009 / P001001,
+    pct_two_or_more_races ~ P003008 / P001001,
     pct_hispanic_white ~ P008011 / P001001,
     pct_hispanic_black ~ P008012 / P001001,
     pct_hispanic_native ~ P008013 / P001001,
@@ -75,8 +77,8 @@ all_formulas_sf1 <- list(
   
   # Universe: Occupied housing units
   occupied_housing_units = c(
-    n_occupied_housing_units ~ H010001
-    # pct_renting ~ SF3 only
+    n_occupied_housing_units ~ H010001,
+    pct_renting ~ H004003 / H010001
     # pct_heating_utility_gas ~ SF3 only
     # pct_heating_gas_tank ~ SF3 only
     # pct_heating_electricity ~ SF3 only
@@ -156,7 +158,7 @@ all_formulas_sf1 <- list(
   
 )
 
-## SF3 ----
+## SF3 (2000) ----
 
 all_formulas_sf3 <- list(
   
@@ -452,7 +454,283 @@ all_formulas_sf3 <- list(
   
 )
 
-## ACS ----
+## SF1 (2010) ----
+
+all_formulas_sf1_2010 <- list(
+  
+  # Universe: Total population
+  total_population = c(
+    population ~ P001001,
+    
+    # Race + ethnicity
+    pct_female ~ P012026 / P001001,
+    pct_white ~ P003002 / P001001,
+    pct_black ~ P003003 / P001001,
+    pct_native ~ P003004 / P001001,
+    pct_asian ~ P003005 / P001001,
+    pct_two_or_more_races ~ P003008 / P001001,
+    pct_hispanic_white ~ P005011 / P001001,
+    pct_hispanic_black ~ P005012 / P001001,
+    pct_hispanic_native ~ P005013 / P001001,
+    pct_hispanic_asian ~ P005014 / P001001,
+    pct_hispanic_two_or_more_races ~ P005017 / P001001,
+    pct_non_hispanic_white ~ P005003 / P001001,
+    pct_non_hispanic_black ~ P005004 / P001001,
+    pct_non_hispanic_native ~ P005005 / P001001,
+    pct_non_hispanic_asian ~ P005006 / P001001,
+    pct_non_hispanic_two_or_more_races ~ P005009 / P001001,
+    pct_hispanic ~ P005010 / P001001,
+    # pct_foreign_born ~ B05006_001 / P001001,
+    
+    # Compatibility with 1990 Decennial Census
+    pct_asian_pacific_islander ~ (P003005 + P003006) / P001001,
+    pct_hispanic_asian_pacific_islander ~ (P005014 + P005015) / P001001,
+    pct_non_hispanic_asian_pacific_islander ~ (P005006 + P005007) / P001001,
+
+    # Age
+    pct_age_under_5 ~ (P012003 + P012027) / P001001,
+    pct_age_5_to_9 ~ (P012004 + P012028) / P001001,
+    pct_age_10_to_14 ~ (P012005 + P012029) / P001001,
+    pct_age_15_to_17 ~ (P012006 + P012030) / P001001,
+    pct_age_18_to_19 ~ (P012007 + P012031) / P001001,
+    pct_age_20 ~ (P012008 + P012032) / P001001,
+    pct_age_21 ~ (P012009 + P012033) / P001001,
+    pct_age_22_to_24 ~ (P012010 + P012034) / P001001,
+    pct_age_25_to_29 ~ (P012011 + P012035) / P001001,
+    pct_age_30_to_34 ~ (P012012 + P012036) / P001001,
+    pct_age_35_to_39 ~ (P012013 + P012037) / P001001,
+    pct_age_40_to_44 ~ (P012014 + P012038) / P001001,
+    pct_age_45_to_49 ~ (P012015 + P012039) / P001001,
+    pct_age_50_to_54 ~ (P012016 + P012040) / P001001,
+    pct_age_55_to_59 ~ (P012017 + P012041) / P001001,
+    pct_age_60_to_61 ~ (P012018 + P012042) / P001001,
+    pct_age_62_to_64 ~ (P012019 + P012043) / P001001,
+    pct_age_65_to_66 ~ (P012020 + P012044) / P001001,
+    pct_age_67_to_69 ~ (P012021 + P012045) / P001001,
+    pct_age_70_to_74 ~ (P012022 + P012046) / P001001,
+    pct_age_75_to_79 ~ (P012023 + P012047) / P001001,
+    pct_age_80_to_84 ~ (P012024 + P012048) / P001001,
+    pct_age_over_85 ~ (P012025 + P012049) / P001001,
+    
+    # Compatibility with 1990 Decennial Census
+    pct_age_65_to_69 ~ (P012020 + P012021 + P012044 + P012045) / P001001
+  ),
+  
+  # Universe: Households
+  households = c(
+    n_households ~ P018001,
+    mean_household_size ~ P017001,
+    pct_households_single_father ~ P018005 / P018001,
+    pct_households_single_mother ~ P018006 / P018001
+    # pct_public_assistance ~ ACS only
+  ),
+  
+  # Universe: Occupied housing units
+  occupied_housing_units = c(
+    n_occupied_housing_units ~ H004001,
+    pct_renting ~ H004004 / H010001
+    # pct_heating_utility_gas ~ ACS only
+    # pct_heating_gas_tank ~ ACS only
+    # pct_heating_electricity ~ ACS only
+    # pct_heating_oil ~ ACS only
+    # pct_heating_coal ~ ACS only
+    # pct_heating_wood ~ ACS only
+    # pct_heating_solar ~ ACS only
+    # pct_heating_other ~ ACS only
+    # pct_heating_none ~ ACS only
+  ),
+  
+  # Universe: Housing units
+  housing_units = c(
+    n_housing_units ~ H001001
+    # pct_housing_standalone ~ ACS only
+    # pct_housing_1_unit ~ ACS only
+    # pct_housing_2_units ~ ACS only
+    # pct_housing_3_to_4_units ~ ACS only
+    # pct_housing_5_to_9_units ~ ACS only
+    # pct_housing_10_to_19_units ~ ACS only
+    # pct_housing_20_to_49_units ~ ACS only
+    # pct_housing_gt_50_units ~ ACS only
+    # pct_housing_mobile_home ~ ACS only
+    # pct_housing_vehicle ~ ACS only
+    # pct_built_2014_onwards ~ ACS only
+    # pct_built_2010_to_2013 ~ ACS only
+    # pct_built_2000_to_2009 ~ ACS only
+    # pct_built_1990_to_1999 ~ ACS only
+    # pct_built_1980_to_1989 ~ ACS only
+    # pct_built_1970_to_1979 ~ ACS only
+    # pct_built_1960_to_1969 ~ ACS only
+    # pct_built_1950_to_1959 ~ ACS only
+    # pct_built_1940_to_1949 ~ ACS only
+    # pct_built_before_1939 ~ ACS only
+    # med_year_built ~ ACS only
+  ),
+  
+  # Universe: Population 16 years and over (employment)
+  # ACS only
+  
+  # Universe: Population 18 years and over (education)
+  # ACS only
+  
+  # Universe: Workers 16 years and over (transportation)
+  # ACS only
+  
+  # Universe: Workers 16 years and over who did not work at home
+  # ACS only
+  
+  # Currency-based variables
+  # ACS only
+  
+  indices = c(
+    # Ethnic fractionalization
+    #
+    # Alesina, A., Devleeschauwer, A., Easterly, W., Kurlat, S., & Wacziarg, R.
+    # (2003). Fractionalization. Journal of Economic Growth, 8(2), 155–194.
+    # https://doi.org/10.1023/A:1024471506938
+    #
+    # ethnic_fractionalization = 1 - (
+    #   (non_hispanic_white / population)^2 +
+    #   (non_hispanic_black / population)^2 +
+    #   (non_hispanic_asian / population)^2 +
+    #   (hispanic / population)^2
+    # )
+    ethnic_fractionalization ~ 1 - (
+      (P005003 / P001001)^2 +
+      (P005004 / P001001)^2 +
+      (P005006 / P001001)^2 +
+      (P005010 / P001001)^2
+    )
+    
+    # Townsend Index
+    # ACS only
+    
+  )
+  
+)
+
+## PL 94-171 (2020) ----
+
+all_formulas_pl <- list(
+  
+  # Universe: Total population
+  total_population = c(
+    population ~ P1_001N,
+    
+    # Race + ethnicity
+    # pct_female ~ ACS only
+    pct_white ~ P1_003N / P1_001N,
+    pct_black ~ P1_004N / P1_001N,
+    pct_native ~ P1_005N / P1_001N,
+    pct_asian ~ P1_006N / P1_001N,
+    pct_two_or_more_races ~ P1_009N / P1_001N,
+    pct_hispanic_white ~ (P1_003N - P2_005N) / P1_001N,
+    pct_hispanic_black ~ (P1_004N - P2_006N) / P1_001N,
+    pct_hispanic_native ~ (P1_005N - P2_007N) / P1_001N,
+    pct_hispanic_asian ~ (P1_006N - P2_008N) / P1_001N,
+    pct_hispanic_two_or_more_races ~ (P1_009N - P2_011N) / P1_001N,
+    pct_non_hispanic_white ~ P2_005N / P1_001N,
+    pct_non_hispanic_black ~ P2_006N / P1_001N,
+    pct_non_hispanic_native ~ P2_007N / P1_001N,
+    pct_non_hispanic_asian ~ P2_008N / P1_001N,
+    pct_non_hispanic_two_or_more_races ~ P2_011N / P1_001N,
+    pct_hispanic ~ P2_002N / P1_001N,
+    # pct_foreign_born ~ B05006_001 / P1_001N,
+    
+    # Compatibility with 1990 Decennial Census
+    pct_asian_pacific_islander ~ (P1_006N + P1_007N) / P1_001N,
+    pct_hispanic_asian_pacific_islander ~ (
+      P1_006N - P2_008N + P1_007N - P2_009N
+    ) / P1_001N,
+    pct_non_hispanic_asian_pacific_islander ~ (P2_008N + P2_009N) / P1_001N
+
+    # Age
+    # ACS only
+  ),
+  
+  # Universe: Households
+  # ACS only
+  
+  # Universe: Housing units
+  housing_units = c(
+    n_housing_units ~ H1_001N,
+    n_occupied_housing_units ~ H1_002N
+    # pct_renting ~ ACS only
+    # pct_heating_utility_gas ~ ACS only
+    # pct_heating_gas_tank ~ ACS only
+    # pct_heating_electricity ~ ACS only
+    # pct_heating_oil ~ ACS only
+    # pct_heating_coal ~ ACS only
+    # pct_heating_wood ~ ACS only
+    # pct_heating_solar ~ ACS only
+    # pct_heating_other ~ ACS only
+    # pct_heating_none ~ ACS only
+    # pct_housing_standalone ~ ACS only
+    # pct_housing_1_unit ~ ACS only
+    # pct_housing_2_units ~ ACS only
+    # pct_housing_3_to_4_units ~ ACS only
+    # pct_housing_5_to_9_units ~ ACS only
+    # pct_housing_10_to_19_units ~ ACS only
+    # pct_housing_20_to_49_units ~ ACS only
+    # pct_housing_gt_50_units ~ ACS only
+    # pct_housing_mobile_home ~ ACS only
+    # pct_housing_vehicle ~ ACS only
+    # pct_built_2014_onwards ~ ACS only
+    # pct_built_2010_to_2013 ~ ACS only
+    # pct_built_2000_to_2009 ~ ACS only
+    # pct_built_1990_to_1999 ~ ACS only
+    # pct_built_1980_to_1989 ~ ACS only
+    # pct_built_1970_to_1979 ~ ACS only
+    # pct_built_1960_to_1969 ~ ACS only
+    # pct_built_1950_to_1959 ~ ACS only
+    # pct_built_1940_to_1949 ~ ACS only
+    # pct_built_before_1939 ~ ACS only
+    # med_year_built ~ ACS only
+  ),
+  
+  # Universe: Population 16 years and over (employment)
+  # ACS only
+  
+  # Universe: Population 18 years and over (education)
+  # ACS only
+  
+  # Universe: Workers 16 years and over (transportation)
+  # ACS only
+  
+  # Universe: Workers 16 years and over who did not work at home
+  # ACS only
+  
+  # Currency-based variables
+  # ACS only
+  
+  indices = c(
+    # Ethnic fractionalization
+    #
+    # Alesina, A., Devleeschauwer, A., Easterly, W., Kurlat, S., & Wacziarg, R.
+    # (2003). Fractionalization. Journal of Economic Growth, 8(2), 155–194.
+    # https://doi.org/10.1023/A:1024471506938
+    #
+    # ethnic_fractionalization = 1 - (
+    #   (non_hispanic_white / population)^2 +
+    #   (non_hispanic_black / population)^2 +
+    #   (non_hispanic_asian / population)^2 +
+    #   (hispanic / population)^2
+    # )
+    ethnic_fractionalization ~ 1 - (
+      (P2_005N / P1_001N)^2 +
+      (P2_006N / P1_001N)^2 +
+      (P2_008N / P1_001N)^2 +
+      (P2_002N / P1_001N)^2
+    )
+    
+    # Townsend Index
+    # ACS only
+    
+  )
+  
+)
+
+## ACS (2009-2020) ----
+# NOTE: 2009-2020 are unavailable from tidycensus
 
 all_formulas_acs <- list(
   
@@ -553,16 +831,16 @@ all_formulas_acs <- list(
     pct_housing_gt_50_units ~ B25024_009 / B25024_001,
     pct_housing_mobile_home ~ B25024_010 / B25024_001,
     pct_housing_vehicle ~ B25024_011 / B25024_001,
-    pct_built_2014_onwards ~ B25034_002 / B25024_001,
-    pct_built_2010_to_2013 ~ B25034_003 / B25024_001,
-    pct_built_2000_to_2009 ~ B25034_004 / B25024_001,
-    pct_built_1990_to_1999 ~ B25034_005 / B25024_001,
-    pct_built_1980_to_1989 ~ B25034_006 / B25024_001,
-    pct_built_1970_to_1979 ~ B25034_007 / B25024_001,
-    pct_built_1960_to_1969 ~ B25034_008 / B25024_001,
-    pct_built_1950_to_1959 ~ B25034_009 / B25024_001,
-    pct_built_1940_to_1949 ~ B25034_010 / B25024_001,
-    pct_built_before_1939 ~ B25034_011 / B25024_001,
+    # pct_built_2014_onwards ~ B25034_002 / B25024_001,
+    # pct_built_2010_to_2013 ~ B25034_003 / B25024_001,
+    # pct_built_2000_to_2009 ~ B25034_004 / B25024_001,
+    # pct_built_1990_to_1999 ~ B25034_005 / B25024_001,
+    # pct_built_1980_to_1989 ~ B25034_006 / B25024_001,
+    # pct_built_1970_to_1979 ~ B25034_007 / B25024_001,
+    # pct_built_1960_to_1969 ~ B25034_008 / B25024_001,
+    # pct_built_1950_to_1959 ~ B25034_009 / B25024_001,
+    # pct_built_1940_to_1949 ~ B25034_010 / B25024_001,
+    # pct_built_before_1939 ~ B25034_011 / B25024_001,
     med_year_built ~ B25035_001
   ),
   
@@ -772,31 +1050,95 @@ all_formulas_acs <- list(
 
 # Pre-fetch all -----------------------------------------------------------
 
-invisible(lapply(
-  all_formulas_sf1,
-  function(formulas) {
-    get_census(
-      geography = "block",
-      dataset = "sf1",
-      year = 2000,
-      formulas = formulas
-    )
-  }
-))
-
-## SF3 ----
+## SF1 (2000) ----
 
 invisible(lapply(
   c("block group", "tract", "county", "state"),
   function(geography) {
+    message(sprintf("==== Pre-fetching 2000 SF1 %s", geography))
+    invisible(get_census(
+      geography = geography,
+      dataset = "sf1",
+      year = 2000,
+      formulas = unlist(all_formulas_sf1_2000)
+    ))
+    gc()
+  }
+))
+
+## SF3 (2000) ----
+
+invisible(lapply(
+  c("block group", "tract", "county", "state"),
+  function(geography) {
+    message(sprintf("==== Pre-fetching 2000 SF3 %s", geography))
     invisible(get_census(
       geography = geography,
       dataset = "sf3",
       year = 2000,
       formulas = unlist(all_formulas_sf3)
     ))
+    gc()
   }
 ))
+
+## SF1 (2010) ----
+
+invisible(lapply(
+  c("block group", "tract", "county", "state"),
+  function(geography) {
+    message(sprintf("==== Pre-fetching 2010 SF1 %s", geography))
+    invisible(get_census(
+      geography = geography,
+      dataset = "sf1",
+      year = 2010,
+      formulas = unlist(all_formulas_sf1_2010)
+    ))
+    gc()
+  }
+))
+
+## PL 94-171 (2020) ----
+
+invisible(lapply(
+  # c("block", "block group", "tract", "county", "state"),
+  c("block group", "tract", "county", "state"),
+  function(geography) {
+    message(sprintf("==== Pre-fetching 2020 PL 94-171 %s", geography))
+    invisible(get_census(
+      geography = geography,
+      dataset = "pl",
+      year = 2020,
+      formulas = unlist(all_formulas_pl)
+    ))
+    gc()
+  }
+))
+
+## ACS5 (2013-2020) ----
+
+invisible(apply(
+  expand.grid(
+    # year = 2013:2020,
+    year = 2020:2013,
+    geography = c("block group", "tract", "county", "state")
+  ),
+  1,
+  function(row) {
+    message(sprintf(
+      "==== Pre-fetching %s ACS5 %s", row[["year"]], row[["geography"]]
+    ))
+    invisible(get_census(
+      geography = row[["geography"]],
+      dataset = "acs5",
+      year = as.numeric(row[["year"]]), # Gets type converted in the apply()
+      formulas = unlist(all_formulas_acs)
+    ))
+    gc()
+  }
+))
+
+# Extra -------------------------------------------------------------------
 
 explain(2020, "acs5", pct_female ~ B01001_026 / B01001_001, delimiter = ">")
 
@@ -811,20 +1153,7 @@ get_census(
 
 get_census(
   geography = "block group",
-  dataset = "acs5",
-  year = 2019,
-)
-
-get_census(
-  geography = "block group",
-  dataset = "acs5",
-  year = 2019,
-)
-
-get_census(
-  geography = "block group",
-  dataset = "acs5",
-  year = 2019,
-  formulas = c(
-  )
+  dataset = "pl",
+  year = 2020,
+  unlist(all_formulas_pl)
 )
