@@ -54,23 +54,27 @@ get_variables_cached <- function(year, dataset) {
   } else {
     result <- load_variables(year, dataset)
     fwrite(result, variables_file)
+    return(result)
   }
 }
 
 # Retrieve data from the Census API via tidycensus
 get_tidycensus_cached <- function(geography, year, dataset, needed_variables,
-                                  states = STATES_DC_FIPS) { # TODO: check if states= agrees with the last run
+                                  states = STATES_DC_FIPS, # TODO: check if states= agrees with the last run
+                                  check_variables = TRUE) { 
   cache_directory <- file.path(TIDYCENSUS_CACHE, dataset, year, geography)
   dir.create(cache_directory, showWarnings = FALSE, recursive = TRUE)
   
-  message("Checking variables")
-  all_variables <- get_variables_cached(year, dataset)[["name"]]
-  missing_variables <- setdiff(needed_variables, all_variables)
-  if (length(missing_variables > 0)) {
-    stop(sprintf(
-      "Unavailable variables: %s",
-      paste(missing_variables, collapse = ", ")
-    ))
+  if (check_variables) {
+    message("Checking variables")
+    all_variables <- get_variables_cached(year, dataset)[["name"]]
+    missing_variables <- setdiff(needed_variables, all_variables)
+    if (length(missing_variables > 0)) {
+      stop(sprintf(
+        "Unavailable variables: %s",
+        paste(missing_variables, collapse = ", ")
+      ))
+    }
   }
   
   # List of cached variables, minus GEOID
@@ -88,8 +92,10 @@ get_tidycensus_cached <- function(geography, year, dataset, needed_variables,
   # Function used for fetching
   if (dataset == "acs5") {
     fetch_function <- get_acs
+    value_column <- "estimate"
   } else {
     fetch_function <- get_decennial
+    value_column <- "value"
   }
   
   message(sprintf(
@@ -130,7 +136,7 @@ get_tidycensus_cached <- function(geography, year, dataset, needed_variables,
         }
       )),
       GEOID ~ variable,
-      value.var = "estimate"
+      value.var = value_column
     )
     
     # Cache new data
@@ -187,7 +193,7 @@ get_census <- function(geography, year, dataset, formulas,
 }
 
 # Fill in variables from a formula using definitions from the Census
-explain <- function(year, dataset, formula, width = NULL) {
+explain <- function(year, dataset, formula, width = NULL, delimiter = "$") {
   variables <- get_variables_cached(year, dataset)
   result <- format(formula, width = width)
   sapply(
@@ -195,13 +201,14 @@ explain <- function(year, dataset, formula, width = NULL) {
     function(variable) {
       definition <- subset(variables, name == variable)
       label <- sprintf(
-        "%s$%s",
+        "%s%s%s",
         toTitleCase(tolower(definition[["concept"]])),
+        delimiter,
         definition[["label"]]
       )
       label <- gsub("Estimate!!", "", label)
       label <- gsub(":$", "", label)
-      label <- gsub(":*!!", "$", label)
+      label <- gsub(":*!!", delimiter, label)
       label <- sprintf("[%s]", label)
       result <<- gsub(variable, label, result, fixed = TRUE)
     }
