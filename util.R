@@ -22,13 +22,16 @@ GEOGRAPHIES_NO_STATE <- c(
   "public use microdata area", "zip code tabulation area", "zcta"
 )
 
-# FIPS codes for the 50 states + DC
-STATES_DC_FIPS <- c(
-  "01", "02", "04", "05", "06", "08", "09", "10", "11", "12", "13", "15", "16",
-  "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
-  "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42",
-  "44", "45", "46", "47", "48", "49", "50", "51", "53", "54", "55", "56"
+MAIN_GEOGRAPHIES <- c(
+  "state", "county", "tract", "block group", "block", "zip code tabulation area"
 )
+
+FIPS_DF <- read.csv("external/fips.csv")
+
+# FIPS codes for the 50 states + DC - FIPS codes are sorted by first by states
+# alphabetically, so we can subset the FIPS codes to those at or before Wyoming
+# ("56")
+STATES_DC_FIPS <- sprintf("%02d", subset(FIPS_DF, FIPS <= 56)[["FIPS"]])
 
 if (file.exists(API_KEY_FILE)) {
   suppressMessages(census_api_key(readLines(API_KEY_FILE)))
@@ -104,7 +107,7 @@ get_tidycensus_cached <- function(geography,
   variables_to_fetch <- setdiff(needed_variables, cached_variables)
   
   # Function used for fetching
-  if (dataset == "acs5") {
+  if (dataset %in% c("acs5", "acs3", "acs1")) {
     fetch_function <- function(...) {
       return(get_acs(..., survey = dataset))
     }
@@ -199,14 +202,17 @@ get_tidycensus_cached <- function(geography,
 # census_fetch_function should be a function returning a data.frame-like object
 # with the GEOIDs in the first column and all other specified variables in other
 # columns
-get_census <- function(geography, year, dataset, formulas,
+get_census <- function(geography,
+                       year,
+                       dataset,
+                       formulas,
                        census_fetch_function = get_tidycensus_cached,
                        states = STATES_DC_FIPS, ...) {
   needed_variables <- unique(unlist(lapply(formulas, rhs_variables)))
   
   data <- census_fetch_function(geography, year, dataset, needed_variables, ...)
   
-  result <- data.frame(GEOID = data[["GEOID"]])
+  result <- data.table(year = year, GEOID = data[["GEOID"]])
   
   message("Evaluating formulas")
   invisible(pblapply(

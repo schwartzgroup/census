@@ -729,8 +729,8 @@ all_formulas_pl <- list(
   
 )
 
-## ACS (2009-2020) ----
-# NOTE: 2009-2020 are unavailable from tidycensus
+## ACS (2005-2020) ----
+# NOTE: 2009-2020 ACS5 are unavailable from tidycensus
 
 all_formulas_acs <- list(
   
@@ -1050,110 +1050,180 @@ all_formulas_acs <- list(
 
 # Pre-fetch all -----------------------------------------------------------
 
-## SF1 (2000) ----
+get_census_multiple <- function(geographies,
+                                years,
+                                datasets,
+                                formulas,
+                                ...,
+                                discard = FALSE
+                                ) {
+  grid <- expand.grid(
+    year = years,
+    geography = geographies,
+    dataset = datasets
+  )
+  all_results <- apply(
+    grid,
+    1,
+    function(row) {
+      message(sprintf(
+        "==== Fetching %s %s %s",
+        row[["year"]], row[["dataset"]], row[["geography"]]
+      ))
+      result <- get_census(
+        geography = row[["geography"]],
+        dataset = row[["dataset"]],
+        year = as.numeric(row[["year"]]), # Gets type converted in the apply()
+        formulas = formulas,
+        ...
+      )
+      if (discard) {
+        rm(result)
+        gc()
+      } else {
+        return(result)
+      }
+    }
+  )
+  if (discard) {
+    rm(all_results)
+    gc()
+  } else {
+    return(list(
+      results = all_results,
+      grid = grid
+    ))
+  }
+}
+
+# SF1 (2000)
+# get_census_multiple(
+#   geographies = MAIN_GEOGRAPHIES,
+#   years = 2000,
+#   datasets = "sf1",
+#   formulas = unlist(all_formulas_sf1_2000),
+#   discard = TRUE
+# )
+
+# invisible(lapply(
+#   all_formulas_sf1_2000,
+#   function(formulas) {
+#     get_census_multiple(
+#       geographies = MAIN_GEOGRAPHIES,
+#       years = 2000,
+#       datasets = "sf1",
+#       formulas = formulas,
+#       discard = TRUE
+#     )
+#   }
+# ))
 
 invisible(lapply(
-  c("block group", "tract", "county", "state"),
-  function(geography) {
-    message(sprintf("==== Pre-fetching 2000 SF1 %s", geography))
-    invisible(get_census(
-      geography = geography,
-      dataset = "sf1",
-      year = 2000,
-      formulas = unlist(all_formulas_sf1_2000)
-    ))
-    gc()
+  unique(unlist(lapply(
+    unlist(all_formulas_sf1_2000),
+    rhs_variables
+  ))),
+  function(variable) {
+    message(variable)
+    tryCatch(
+      get_tidycensus_cached("block", 2000, "sf1", variable),
+      error = function(e) TRUE,
+      finally = NULL
+    )
   }
 ))
 
-## SF3 (2000) ----
-
-invisible(lapply(
-  c("block group", "tract", "county", "state"),
-  function(geography) {
-    message(sprintf("==== Pre-fetching 2000 SF3 %s", geography))
-    invisible(get_census(
-      geography = geography,
-      dataset = "sf3",
-      year = 2000,
-      formulas = unlist(all_formulas_sf3)
-    ))
-    gc()
-  }
-))
-
-## SF1 (2010) ----
-
-invisible(lapply(
-  c("block group", "tract", "county", "state"),
-  function(geography) {
-    message(sprintf("==== Pre-fetching 2010 SF1 %s", geography))
-    invisible(get_census(
-      geography = geography,
-      dataset = "sf1",
-      year = 2010,
-      formulas = unlist(all_formulas_sf1_2010)
-    ))
-    gc()
-  }
-))
-
-## PL 94-171 (2020) ----
-
-invisible(lapply(
-  # c("block", "block group", "tract", "county", "state"),
-  c("block group", "tract", "county", "state"),
-  function(geography) {
-    message(sprintf("==== Pre-fetching 2020 PL 94-171 %s", geography))
-    invisible(get_census(
-      geography = geography,
-      dataset = "pl",
-      year = 2020,
-      formulas = unlist(all_formulas_pl)
-    ))
-    gc()
-  }
-))
-
-## ACS5 (2013-2020) ----
-
-invisible(apply(
-  expand.grid(
-    # year = 2013:2020,
-    year = 2020:2013,
-    geography = c("block group", "tract", "county", "state")
-  ),
-  1,
-  function(row) {
-    message(sprintf(
-      "==== Pre-fetching %s ACS5 %s", row[["year"]], row[["geography"]]
-    ))
-    invisible(get_census(
-      geography = row[["geography"]],
-      dataset = "acs5",
-      year = as.numeric(row[["year"]]), # Gets type converted in the apply()
-      formulas = unlist(all_formulas_acs)
-    ))
-    gc()
-  }
-))
-
-# Extra -------------------------------------------------------------------
-
-explain(2020, "acs5", pct_female ~ B01001_026 / B01001_001, delimiter = ">")
-
-get_census(
-  # geography = "block group",
-  geography = "tract",
-  dataset = "acs5",
-  year = 2009,
-  # unlist(all_formulas_acs)
-  list(all_formulas_acs$indices[[2]])
+# SF3 (2000)
+get_census_multiple(
+  geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
+  years = 2000,
+  datasets = "sf3",
+  formulas = unlist(all_formulas_sf3),
+  discard = TRUE
 )
 
-get_census(
-  geography = "block group",
-  dataset = "pl",
-  year = 2020,
-  unlist(all_formulas_pl)
+# SF1 (2010)
+get_census_multiple(
+  geographies = MAIN_GEOGRAPHIES,
+  years = 2010,
+  datasets = "sf1",
+  formulas = unlist(all_formulas_sf1_2010),
+  discard = TRUE
+)
+
+# PL 94-171 (2020)
+get_census_multiple(
+  geographies = setdiff(MAIN_GEOGRAPHIES, "zip code tabulation area"),
+  years = 2020,
+  datasets = "pl",
+  formulas = unlist(all_formulas_pl),
+  discard = TRUE
+)
+
+# ACS5 (2013-2020)
+# TODO: need to retrieve ACS 2009-2012 from totalcensus
+get_census_multiple(
+  geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
+  years = 2020:2013,
+  datasets = "acs5",
+  formulas = unlist(all_formulas_acs),
+  discard = TRUE
+)
+
+# ACS1 (2005-2019)
+get_census_multiple(
+  geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
+  years = 2019:2006, # TODO: B08301 + B08303 are not available in 2005
+  datasets = "acs1",
+  formulas = unlist(all_formulas_acs),
+  discard = TRUE
+)
+
+# Combine -----------------------------------------------------------------
+
+x <- get_census_multiple(
+  geographies = "block group",
+  years = 2013:2020,
+  datasets = "acs5",
+  formulas = unlist(all_formulas_acs),
+  discard = FALSE
+)
+
+x2 <- get_census_multiple(
+  geographies = "block group",
+  years = 2000,
+  datasets = "sf3",
+  formulas = unlist(all_formulas_sf3)
+)
+
+pblapply(
+  setdiff(MAIN_GEOGRAPHIES, "zip code tabulation area"),
+  function(geography) {
+    message(geography)
+    fwrite(
+      get_census_multiple(
+        geographies = geography,
+        years = 2020,
+        datasets = "pl",
+        formulas = unlist(all_formulas_pl)
+      )$results[[1]],
+      sprintf("2020_pl_%s.csv.gz", gsub(" ", "_", geography))
+    )
+  }
+)
+
+pblapply(
+  setdiff(MAIN_GEOGRAPHIES, "block"),
+  function(geography) {
+    message(geography)
+    fwrite(
+      get_census_multiple(
+        geographies = geography,
+        years = 2020,
+        datasets = "acs5",
+        formulas = unlist(all_formulas_acs)
+      )$results[[1]],
+      sprintf("2020_acs5_%s.csv.gz", gsub(" ", "_", geography))
+    )
+  }
 )
