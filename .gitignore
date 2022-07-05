@@ -1,4 +1,6 @@
 .Rproj.user/
-cache/
 *.Rproj
+*.Rhistory
+cache/
+external/tiger/
 api_key.txt
