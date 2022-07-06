@@ -140,7 +140,13 @@ for (geography in names(TIGER_DOWNLOAD_TEMPLATES)) {
     } else {
       message(sprintf("Downloading %s %s", year, geography))
       for (url in fill_tiger_template(years[[year]])) {
-        download_zip(url, output_directory, temp_file = "temp_tiger.zip")
+        if (file.exists(file.path(
+          ouput_directory, gsub(".zip", ".shp", basename(url))
+        ))) {
+          message(sprintf("Skipping URL: %s", url))
+        } else {
+          download_zip(url, output_directory, temp_file = "temp_tiger.zip")
+        }
       }
       file.create(finished_marker)
     }
