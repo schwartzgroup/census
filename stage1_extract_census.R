@@ -1098,13 +1098,13 @@ get_census_multiple <- function(geographies,
 
 ## SF1 (2000) ----
 
-# get_census_multiple(
-#   geographies = MAIN_GEOGRAPHIES,
-#   years = 2000,
-#   datasets = "sf1",
-#   formulas = unlist(all_formulas_sf1_2000),
-#   discard = TRUE
-# )
+get_census_multiple(
+  geographies = MAIN_GEOGRAPHIES,
+  years = 2000,
+  datasets = "sf1",
+  formulas = unlist(all_formulas_sf1_2000),
+  discard = TRUE
+)
 
 # get_census_multiple(
 #   geographies = "block",
@@ -1114,20 +1114,20 @@ get_census_multiple <- function(geographies,
 #   discard = TRUE
 # )
 
-invisible(lapply(
-  unique(unlist(lapply(
-    unlist(all_formulas_sf1_2000),
-    rhs_variables
-  ))),
-  function(variable) {
-    message(variable)
-    tryCatch(
-      get_tidycensus_cached("block", 2000, "sf1", variable),
-      error = function(e) TRUE,
-      finally = NULL
-    )
-  }
-))
+# invisible(lapply(
+#   unique(unlist(lapply(
+#     unlist(all_formulas_sf1_2000),
+#     rhs_variables
+#   ))),
+#   function(variable) {
+#     message(variable)
+#     tryCatch(
+#       get_tidycensus_cached("block", 2000, "sf1", variable),
+#       error = function(e) TRUE,
+#       finally = NULL
+#     )
+#   }
+# ))
 
 ## SF3 (2000) ----
 
@@ -1164,96 +1164,49 @@ get_census_multiple(
 
 get_census_multiple(
   geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
-  years = 2020:2013,
+  years = 2013:2020,
   datasets = "acs5",
   formulas = unlist(all_formulas_acs),
   discard = TRUE
 )
 
-## ACS1 (2005-2019) ----
+## ACS3 (2007-2013) ----
+
 get_census_multiple(
-  geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
-  years = 2019:2006, # TODO: B08301 + B08303 are not available in 2005
+  geographies = c("state", "county"),
+  years = c(2007:2009, 2011:2013), # TODO: 2010 is broken
+  datasets = "acs3",
+  formulas = unlist(all_formulas_acs),
+  discard = TRUE
+)
+
+## ACS1 (2005) ----
+# B08301 + B08303 are not available in 2005
+
+get_census_multiple(
+  geographies = c("state", "county"),
+  years = 2005,
+  datasets = "acs1",
+  formulas = Filter(
+    function(f) {
+      return(!any(grepl("B083", rhs_variables(f))))
+    },
+    unlist(all_formulas_acs)
+  ),
+  discard = TRUE
+)
+
+## ACS1 (2006-2019) ----
+
+get_census_multiple(
+  geographies = c("state", "county"),
+  years = 2019:2006,
   datasets = "acs1",
   formulas = unlist(all_formulas_acs),
   discard = TRUE
 )
 
 # Export ------------------------------------------------------------------
-
-x <- get_census_multiple(
-  geographies = "block group",
-  years = 2013:2020,
-  datasets = "acs5",
-  formulas = unlist(all_formulas_acs),
-  discard = FALSE
-)
-
-x2 <- get_census_multiple(
-  geographies = "block group",
-  years = 2000,
-  datasets = "sf3",
-  formulas = unlist(all_formulas_sf3)
-)
-
-pblapply(
-  setdiff(MAIN_GEOGRAPHIES, "zip code tabulation area"),
-  function(geography) {
-    message(geography)
-    fwrite(
-      get_census_multiple(
-        geographies = geography,
-        years = 2020,
-        datasets = "pl",
-        formulas = unlist(all_formulas_pl)
-      )$results[[1]],
-      sprintf("2020_pl_%s.csv.gz", gsub(" ", "_", geography))
-    )
-  }
-)
-
-pblapply(
-  setdiff(MAIN_GEOGRAPHIES, "block"),
-  function(geography) {
-    message(geography)
-    fwrite(
-      get_census_multiple(
-        geographies = geography,
-        years = 2020,
-        datasets = "acs5",
-        formulas = unlist(all_formulas_acs)
-      )$results[[1]],
-      sprintf("2020_acs5_%s.csv.gz", gsub(" ", "_", geography))
-    )
-  }
-)
-
-# export_census_multiple <- function(..., output_directory) {
-#   result <- get_census_multiple(...)
-#   apply(
-#     unique(result$grid[, c("year", "geography")]),
-#     1,
-#     function(row) {
-#       message(sprintf("Exporting %s %s", row[["year"]], row[["geography"]]))
-#       output_path <- file.path(
-#         output_directory,
-#         sprintf("%s_%s.csv.gz", row[["year"]], gsub(" ", "_", row[["geography"]]))
-#       )
-#       subset <- result$results[
-#         which(
-#           (result$grid[["year"]] == row[["year"]]) &
-#             (result$grid[["geography"]] == row[["geography"]])
-#         )
-#       ]
-#       invisible(pblapply(
-#         subset,
-#         function(dt) {
-#           fwrite(dt, output_path, append = file.exists(output_path))
-#         }
-#       ))
-#     }
-#   )
-# }
 
 export_census_multiple <- function(geographies,
                                    years,
@@ -1348,7 +1301,7 @@ export_census_multiple(
   output_directory = "output/tables/decennial"
 )
 
-## ACS (2013-2020) ----
+## ACS5 (2013-2020) ----
 # TODO: need to retrieve ACS 2009-2012 from totalcensus
 
 export_census_multiple(
@@ -1359,3 +1312,38 @@ export_census_multiple(
   output_directory = "output/tables/acs5"
 )
 
+## ACS3 (2007-2013) ----
+
+export_census_multiple(
+  geographies = c("state", "county"),
+  years = c(2007:2009, 2011:2013), # TODO: 2010 is broken
+  datasets = "acs3",
+  formulas = unlist(all_formulas_acs),
+  output_directory = "output/tables/acs3"
+)
+
+## ACS1 (2005) ----
+# B08301 + B08303 are not available in 2005
+
+export_census_multiple(
+  geographies = c("state", "county"),
+  years = 2005,
+  datasets = "acs1",
+  formulas = Filter(
+    function(f) {
+      return(!any(grepl("B083", rhs_variables(f))))
+    },
+    unlist(all_formulas_acs)
+  ),
+  output_directory = "output/tables/acs1"
+)
+
+## ACS1 (2006-2019) ----
+
+export_census_multiple(
+  geographies = c("state", "county"),
+  years = 2019:2006,
+  datasets = "acs1",
+  formulas = unlist(all_formulas_acs),
+  output_directory = "output/tables/acs1"
+)
