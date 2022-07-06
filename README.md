@@ -16,7 +16,7 @@ This repository will serve as a unified source for all code related to Census da
 
 ### Stage 1: Retrieving and transforming Census data
 
-The initial step of extracting specific Census variables and either applying labels to them or transforming them in some way (e.g. by combining them with other variables) is performed by [stage1_extract.R](stage1_extract.R). Most of the functionality from this script is located in [util.R](util.R).
+The initial step of extracting specific Census variables and either applying labels to them or transforming them in some way (e.g. by combining them with other variables) is performed by [stage1_extract_census.R](stage1_extract_census.R). Most of the functionality from this script is located in [util.R](util.R).
 
 Variable labels and transforms are expressed via lists or vectors of formulas operating directly on Census table names (e.g. `pct_female ~ P012026 / P001001`). As these can be somewhat abstract and hard to parse, an `explain(...)` function is provided to substitute variable definitions directly into the formulas:
 
