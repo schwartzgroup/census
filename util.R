@@ -42,7 +42,7 @@ if (file.exists(API_KEY_FILE)) {
 
 pboptions(type = "timer")
 
-# Retrieval functions -----------------------------------------------------
+# Functions for Stage 1 ---------------------------------------------------
 
 lhs <- function(f) {
   return(f[[2]])
@@ -212,7 +212,11 @@ get_census <- function(geography,
   
   data <- census_fetch_function(geography, year, dataset, needed_variables, ...)
   
-  result <- data.table(year = year, GEOID = data[["GEOID"]])
+  result <- data.table(
+    year = year,
+    dataset = dataset,
+    GEOID = data[["GEOID"]]
+  )
   
   message("Evaluating formulas")
   invisible(pblapply(
@@ -250,4 +254,14 @@ explain <- function(year, dataset, formula, width = NULL, delimiter = "$") {
     }
   )
   return(result)
+}
+
+download_zip <- function(url, output_directory, temp_file = "temp.zip") {
+  # message(sprintf("Downloading %s to %s", url, output_directory))
+  if (file.exists(temp_file)) {
+    file.remove(temp_file)
+  }
+  download.file(url, temp_file)
+  unzip(temp_file, exdir = output_directory)
+  file.remove(temp_file)
 }

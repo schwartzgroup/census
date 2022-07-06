@@ -77,7 +77,7 @@ TIGER_DOWNLOAD_TEMPLATES = list(
   # Roads
   roads = c(
       "2010" = "https://www2.census.gov/geo/tiger/TIGER2010/ROADS/*",
-      "2010" = "https://www2.census.gov/geo/tiger/TIGER2020/ROADS/*"
+      "2020" = "https://www2.census.gov/geo/tiger/TIGER2020/ROADS/*"
   )
   
 )
@@ -130,16 +130,6 @@ fill_tiger_template <- function(template) {
   return(template)
 }
 
-download_shp <- function(url, output_directory, temp_file = "temp.zip") {
-  # message(sprintf("Downloading %s to %s", url, output_directory))
-  if (file.exists(temp_file)) {
-    file.remove(temp_file)
-  }
-  download.file(url, temp_file)
-  unzip(temp_file, exdir = output_directory)
-  file.remove(temp_file)
-}
-
 for (geography in names(TIGER_DOWNLOAD_TEMPLATES)) {
   years <- TIGER_DOWNLOAD_TEMPLATES[[geography]]
   for (year in names(years)) {
@@ -150,7 +140,7 @@ for (geography in names(TIGER_DOWNLOAD_TEMPLATES)) {
     } else {
       message(sprintf("Downloading %s %s", year, geography))
       for (url in fill_tiger_template(years[[year]])) {
-        download_shp(url, output_directory)
+        download_zip(url, output_directory)
       }
       file.create(finished_marker)
     }
