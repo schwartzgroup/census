@@ -77,7 +77,8 @@ get_tidycensus_cached <- function(geography,
                                   dataset, # "acs5" / "sf1" / "sf3"
                                   needed_variables,
                                   states = STATES_DC_FIPS, # TODO: check if states= agrees with the last run
-                                  check_variables = TRUE
+                                  check_variables = TRUE,
+                                  ...
                                   ) { 
   cache_directory <- file.path(TIDYCENSUS_CACHE, dataset, year, geography)
   dir.create(cache_directory, showWarnings = FALSE, recursive = TRUE)
@@ -152,7 +153,7 @@ get_tidycensus_cached <- function(geography,
     if (geography %in% GEOGRAPHIES_NO_STATE) {
       new_data <- dcast(
         as.data.table(suppressMessages(fetch_function(
-            geography, variables_to_fetch, year = year
+            geography, variables_to_fetch, year = year, ...
         ))),
         GEOID ~ variable,
         value.var = value_column
@@ -262,6 +263,10 @@ download_zip <- function(url, output_directory, temp_file = "temp.zip") {
     file.remove(temp_file)
   }
   download.file(url, temp_file)
-  unzip(temp_file, exdir = output_directory)
+  if (!is.na(getOption("unzip"))) {
+    unzip(temp_file, exdir = output_directory, unzip = getOption("unzip"))
+  } else {
+    unzip(temp_file, exdir = output_directory)
+  }
   file.remove(temp_file)
 }
