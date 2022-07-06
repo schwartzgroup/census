@@ -263,10 +263,12 @@ download_zip <- function(url, output_directory, temp_file = "temp.zip") {
     file.remove(temp_file)
   }
   download.file(url, temp_file)
-  if (!is.na(getOption("unzip"))) {
-    unzip(temp_file, exdir = output_directory, unzip = getOption("unzip"))
-  } else {
-    unzip(temp_file, exdir = output_directory)
-  }
+  tryCatch(
+    system2("unzip", args = c("-d", output_directory, temp_file)),
+    error = function(error) {
+      message(error)
+      unzip(temp_file, exdir = output_directory)
+    }
+  )
   file.remove(temp_file)
 }
