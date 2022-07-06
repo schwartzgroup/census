@@ -36,7 +36,7 @@ for (dataset in names(MRLC_ZIPS)) {
   } else {
     message(sprintf("Downloading %s", dataset))
     for (url in MRLC_ZIPS[[dataset]]) {
-      download_zip(url, output_directory)
+      download_zip(url, output_directory, temp_file = "temp_mrlc.zip")
     }
     file.create(finished_marker)
   }

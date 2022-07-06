@@ -140,7 +140,7 @@ for (geography in names(TIGER_DOWNLOAD_TEMPLATES)) {
     } else {
       message(sprintf("Downloading %s %s", year, geography))
       for (url in fill_tiger_template(years[[year]])) {
-        download_zip(url, output_directory)
+        download_zip(url, output_directory, temp_file = "temp_tiger.zip")
       }
       file.create(finished_marker)
     }
