@@ -16,7 +16,12 @@ This repository will serve as a unified source for all code related to Census da
 
 ### Stage 1: Retrieving and transforming Census data
 
-The initial step of extracting specific Census variables and either applying labels to them or transforming them in some way (e.g. by combining them with other variables) is performed by [stage1_extract_census.R](stage1_extract_census.R). Most of the functionality from this script is located in [util.R](util.R).
+The initial step of extracting specific Census variables and either applying labels to them or transforming them in some way (e.g. by combining them with other variables) is performed by [stage1_extract_census.R](stage1_extract_census.R). Most of the functionality from this script is located in [util.R](util.R), which abstracts away the fetching process. Specifically, this script makes use of two excellent Census data retrieval libraries:
+
+-   [walkerke/tidycensus](https://github.com/walkerke/tidycensus), which queries the Census API, and
+-   [GL-Li/totalcensus](https://github.com/GL-Li/totalcensus), which downloads Census data in bulk and parses out desired columns locally.
+
+`totalcensus` uses up much more space than `tidycensus`, which only retrieves needed variables, but access to block groups in the 2009-2012 ACS 5-year estimate surveys is not currently available from the Census API; this necessitates the use of `totalcensus` to download the raw data directly.
 
 Variable labels and transforms are expressed via lists or vectors of formulas operating directly on Census table names (e.g. `pct_female ~ P012026 / P001001`). As these can be somewhat abstract and hard to parse, an `explain(...)` function is provided to substitute variable definitions directly into the formulas:
 
@@ -54,6 +59,6 @@ where:
 
 A few files have been included in the [external/](external/) directory that were compiled from other sources. Those sources are as follows:
 
-|Name|Source|
-|----|----|
-|[external/fips.csv](external/fips.csv)|National Bureau of Standards. (1987). Federal Information Processing Standards Publication: Codes for the identification of the States, the District of Columbia and the outlying areas of the United States, and associated areas (NIST FIPS 5-2; p. NIST FIPS 5-2). National Bureau of Standards. https://doi.org/10.6028/NBS.FIPS.5-2|
+| Name                                   | Source                                                                                                                                                                                                                                                                                                                                     |
+|----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [external/fips.csv](external/fips.csv) | National Bureau of Standards. (1987). Federal Information Processing Standards Publication: Codes for the identification of the States, the District of Columbia and the outlying areas of the United States, and associated areas (NIST FIPS 5-2; p. NIST FIPS 5-2). National Bureau of Standards. <https://doi.org/10.6028/NBS.FIPS.5-2> |

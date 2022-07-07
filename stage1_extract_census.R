@@ -1159,8 +1159,21 @@ get_census_multiple(
   discard = TRUE
 )
 
+## ACS5 (2009-2012) ----
+
+get_census_multiple(
+  # Only need to retrieve tracts and ZCTAs because totalcensus retrieves all
+  # geographies at once. Tracts triggers downloading all states individually and
+  # ZCTAs triggers downloading whole-US tables.
+  geographies = c("tract", "zip code tabulation area"), 
+  years = 2009:2012,
+  datasets = "acs5",
+  formulas = unlist(all_formulas_acs),
+  discard = TRUE,
+  census_fetch_function = get_totalcensus
+)
+
 ## ACS5 (2013-2020) ----
-# TODO: need to retrieve ACS 2009-2012 from totalcensus
 
 get_census_multiple(
   geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
@@ -1301,8 +1314,18 @@ export_census_multiple(
   output_directory = "output/tables/decennial"
 )
 
+## ACS5 (2009-2012) ----
+
+export_census_multiple(
+  geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
+  years = 2009:2012,
+  datasets = "acs5",
+  formulas = unlist(all_formulas_acs),
+  output_directory = "output/tables/acs5",
+  census_fetch_function = get_totalcensus
+)
+
 ## ACS5 (2013-2020) ----
-# TODO: need to retrieve ACS 2009-2012 from totalcensus
 
 export_census_multiple(
   geographies = setdiff(MAIN_GEOGRAPHIES, "block"),

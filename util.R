@@ -5,12 +5,16 @@
 library(data.table)
 library(pbapply)
 library(tidycensus)
+library(totalcensus)
 library(tools)
 
 # Setup -------------------------------------------------------------------
 
 # Path to save tidycensus results to
 TIDYCENSUS_CACHE <- "cache/tidycensus"
+
+# Path to save totalcensus results to
+TOTALCENSUS_CACHE <- "cache/totalcensus"
 
 # Path where the Census API key will be loaded from
 API_KEY_FILE <- "api_key.txt"
@@ -42,7 +46,11 @@ if (file.exists(API_KEY_FILE)) {
 
 pboptions(type = "timer")
 
+Sys.setenv(PATH_TO_CENSUS = TOTALCENSUS_CACHE)
+
 # Functions for Stage 1 ---------------------------------------------------
+
+### Formula manipulation ----
 
 lhs <- function(f) {
   return(f[[2]])
@@ -56,8 +64,42 @@ rhs_variables <- function(f) {
   return(all.vars(rhs(f)))
 }
 
+## Driver templates ----
+
+.get_variables <- function(year, dataset) {
+  # Return a data.frame-like object of all variables available in the given
+  # year-dataset combination with the following columns:
+  #
+  # * name: character of variable names (e.g. "B01001_001")
+  # * label: character describing the variable (e.g. "Estimate!!Total:")
+  # * concept: character describing the variable category (e.g. "SEX BY AGE")
+  #
+  # These do not necessarily have to be formatted as in the above examples; the
+  # explain(...) function will handle formatting by stripping punctuation and
+  # standardizing the letter case.
+}
+
+.get <- function(geography,
+                 year,
+                 dataset, # "acs5" / "sf1" / "sf3"
+                 needed_variables,
+                 states = STATES_DC_FIPS, # TODO: check if states= agrees with the last run
+                 check_variables = TRUE,
+                 ...
+                 ) { 
+  # Return a data.frame-like object for all needed_variables in a given
+  # geography-year-dataset combination, within the given states. If
+  # check_variables is TRUE, first check needed_variables against
+  # .get_variables(...) and raise an error if not all variables are available.
+  #
+  # The output should have a column of GEOIDs and all other columns should be
+  # the needed_variables.
+}
+
+## tidycensus drivers ----
+
 # Retrieve a list of available variables from the Census API via tidycensus
-get_variables_cached <- function(year, dataset) {
+get_tidycensus_variables_cached <- function(year, dataset) {
   cache_directory <- file.path(TIDYCENSUS_CACHE, dataset, year)
   dir.create(cache_directory, showWarnings = FALSE, recursive = TRUE)
   
@@ -85,7 +127,7 @@ get_tidycensus_cached <- function(geography,
   
   if (check_variables) {
     message("Checking variables")
-    all_variables <- get_variables_cached(year, dataset)[["name"]]
+    all_variables <- get_tidycensus_variables_cached(year, dataset)[["name"]]
     missing_variables <- setdiff(needed_variables, all_variables)
     if (length(missing_variables > 0)) {
       stop(sprintf(
@@ -200,6 +242,81 @@ get_tidycensus_cached <- function(geography,
   return(data)
 }
 
+## totalcensus drivers ----
+
+get_totalcensus_variables <- function(year, dataset) {
+  if (dataset %in% c("sf1", "sf3")) {
+    warning(sprintf(
+      "Translating dataset \"%s\" to \"dec\" for totalcensus compatibility",
+      dataset
+    ))
+    dataset <- "dec"
+  }
+  result <- search_tablecontents(dataset, 2009, view = FALSE)
+  available <- complete.cases(result)
+  return(result[available
+                ][, list(name = reference,
+                         label = table_content,
+                         concept = table_name)])
+}
+
+get_totalcensus <- function(geography,
+                            year,
+                            dataset, # "acs5" / "sf1" / "sf3"
+                            needed_variables,
+                            states = states_DC, # TODO: check if states= agrees with the last run
+                            check_variables = TRUE,
+                            ...
+                            ) { 
+  if (dataset %in% c("sf1", "sf3")) {
+    warning(sprintf(
+      "Translating dataset \"%s\" to \"dec\" for totalcensus compatibility",
+      dataset
+    ))
+    dataset <- "dec"
+  }
+  
+  if (dataset == "acs5") {
+    read_function <- read_acs5year
+  } else if (dataset == "acs1") {
+    read_function <- read_acs1year
+  } else if (dataset == "dec") {
+    read_function <- read_decennial
+  } else {
+    stop(sprintf("Dataset %s not supported", dataset))
+  }
+  
+  if (geography %in% c("zip code tabulation area", "zcta")) {
+    geography <- "860"
+    states <- "US"
+  }
+  
+  if (check_variables) {
+    message("Checking variables")
+    all_variables <- get_totalcensus_variables(year, dataset)[["name"]]
+    missing_variables <- setdiff(needed_variables, all_variables)
+    if (length(missing_variables > 0)) {
+      stop(sprintf(
+        "Unavailable variables: %s",
+        paste(missing_variables, collapse = ", ")
+      ))
+    }
+  }
+  
+  result <- read_function(
+    year = year,
+    states = states,
+    table_contents = needed_variables,
+    summary_level = geography
+  )
+  
+  result[["GEOID"]] <- gsub("^[0-9]+US", "", result[["GEOID"]])
+  
+  return(subset(result, select = c("GEOID", needed_variables)))
+}
+
+## User-facing functions ----
+
 # census_fetch_function should be a function returning a data.frame-like object
 # with the GEOIDs in the first column and all other specified variables in other
 # columns
@@ -234,8 +351,13 @@ get_census <- function(geography,
 }
 
 # Fill in variables from a formula using definitions from the Census
-explain <- function(year, dataset, formula, width = NULL, delimiter = "$") {
-  variables <- get_variables_cached(year, dataset)
+explain <- function(year,
+                    dataset,
+                    formula,
+                    width = NULL,
+                    delimiter = "$",
+                    get_variables = get_tidycensus_variables_cached) {
+  variables <- get_variables(year, dataset)
   result <- format(formula, width = width)
   sapply(
     rhs_variables(formula),
@@ -256,6 +378,8 @@ explain <- function(year, dataset, formula, width = NULL, delimiter = "$") {
   )
   return(result)
 }
+
+## Data retrieval ----
 
 download_zip <- function(url, output_directory, temp_file = "temp.zip") {
   # message(sprintf("Downloading %s to %s", url, output_directory))
