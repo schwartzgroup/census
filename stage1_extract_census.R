@@ -1206,8 +1206,18 @@ export_census_multiple(
 ## ACS5 (2009-2012, totalcensus) ----
 
 export_census_multiple(
-  geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
+  geographies = setdiff(MAIN_GEOGRAPHIES, "block", "zip code tabulation area"),
   years = 2009:2012,
+  datasets = "acs5",
+  formulas = unlist(all_formulas_acs),
+  output_directory = "output/tables/acs5",
+  census_fetch_function = get_totalcensus
+)
+
+# ZCTAs are only available starting in 2011 from the ACS
+export_census_multiple(
+  geographies = "zip code tabulation area",
+  years = 2011:2012,
   datasets = "acs5",
   formulas = unlist(all_formulas_acs),
   output_directory = "output/tables/acs5",
