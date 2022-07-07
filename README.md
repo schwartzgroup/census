@@ -28,10 +28,10 @@ Variable labels and transforms are expressed via lists or vectors of formulas op
     > explain(2010, "sf1", pct_female ~ P012026 / P001001, delimiter = " -> ")
     [1] "pct_female ~ [Sex by Age -> Total -> Female]/[Total Population -> Total]"
 
-To facilitate fast iteration and re-exporting, all referenced tables are locally cached for future use. The cache file hierarchy is structured as follows:
+To facilitate fast iteration and re-exporting, all referenced tables are locally cached for future use. `totalcensus` includes its own caching system; for `tidycensus`, the cache file hierarchy is structured as follows:
 
     cache/
-    └─ <provider>/
+    └─ tidycensus/
        └─ <survey>/
           ├─ <year>/
           │  └─ <geography>/
@@ -40,8 +40,6 @@ To facilitate fast iteration and re-exporting, all referenced tables are locally
           └─ variables.csv.gz
 
 where:
-
--   `<provider>` is the source of the data or the library used to retrieve the data, e.g. `tidycensus`;
 
 -   `<survey>` is the abbreviation of the survey, e.g. `sf1`, `sf3`, `acs5`, `pl`, etc.;
 
