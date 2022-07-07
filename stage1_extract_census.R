@@ -1049,6 +1049,8 @@ all_formulas_acs <- list(
 )
 
 # Pre-fetch all -----------------------------------------------------------
+# Deprecated - code has been left for SF1 as an example. Usage is the same as
+# export_census_multiple(...)
 
 get_census_multiple <- function(geographies,
                                 years,
@@ -1098,126 +1100,13 @@ get_census_multiple <- function(geographies,
 
 ## SF1 (2000) ----
 
-get_census_multiple(
-  geographies = MAIN_GEOGRAPHIES,
-  years = 2000,
-  datasets = "sf1",
-  formulas = unlist(all_formulas_sf1_2000),
-  discard = TRUE
-)
-
 # get_census_multiple(
-#   geographies = "block",
+#   geographies = MAIN_GEOGRAPHIES,
 #   years = 2000,
 #   datasets = "sf1",
 #   formulas = unlist(all_formulas_sf1_2000),
 #   discard = TRUE
 # )
-
-# invisible(lapply(
-#   unique(unlist(lapply(
-#     unlist(all_formulas_sf1_2000),
-#     rhs_variables
-#   ))),
-#   function(variable) {
-#     message(variable)
-#     tryCatch(
-#       get_tidycensus_cached("block", 2000, "sf1", variable),
-#       error = function(e) TRUE,
-#       finally = NULL
-#     )
-#   }
-# ))
-
-## SF3 (2000) ----
-
-get_census_multiple(
-  geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
-  years = 2000,
-  datasets = "sf3",
-  formulas = unlist(all_formulas_sf3),
-  discard = TRUE
-)
-
-## SF1 (2010) ----
-
-get_census_multiple(
-  geographies = MAIN_GEOGRAPHIES,
-  years = 2010,
-  datasets = "sf1",
-  formulas = unlist(all_formulas_sf1_2010),
-  discard = TRUE
-)
-
-## PL 94-171 (2020) ----
-
-get_census_multiple(
-  geographies = setdiff(MAIN_GEOGRAPHIES, "zip code tabulation area"),
-  years = 2020,
-  datasets = "pl",
-  formulas = unlist(all_formulas_pl),
-  discard = TRUE
-)
-
-## ACS5 (2009-2012) ----
-
-get_census_multiple(
-  # Only need to retrieve tracts and ZCTAs because totalcensus retrieves all
-  # geographies at once. Tracts triggers downloading all states individually and
-  # ZCTAs triggers downloading whole-US tables.
-  geographies = c("tract", "zip code tabulation area"), 
-  years = 2009:2012,
-  datasets = "acs5",
-  formulas = unlist(all_formulas_acs),
-  discard = TRUE,
-  census_fetch_function = get_totalcensus
-)
-
-## ACS5 (2013-2020) ----
-
-get_census_multiple(
-  geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
-  years = 2013:2020,
-  datasets = "acs5",
-  formulas = unlist(all_formulas_acs),
-  discard = TRUE
-)
-
-## ACS3 (2007-2013) ----
-
-get_census_multiple(
-  geographies = c("state", "county"),
-  years = c(2007:2009, 2011:2013), # TODO: 2010 is broken
-  datasets = "acs3",
-  formulas = unlist(all_formulas_acs),
-  discard = TRUE
-)
-
-## ACS1 (2005) ----
-# B08301 + B08303 are not available in 2005
-
-get_census_multiple(
-  geographies = c("state", "county"),
-  years = 2005,
-  datasets = "acs1",
-  formulas = Filter(
-    function(f) {
-      return(!any(grepl("B083", rhs_variables(f))))
-    },
-    unlist(all_formulas_acs)
-  ),
-  discard = TRUE
-)
-
-## ACS1 (2006-2019) ----
-
-get_census_multiple(
-  geographies = c("state", "county"),
-  years = 2019:2006,
-  datasets = "acs1",
-  formulas = unlist(all_formulas_acs),
-  discard = TRUE
-)
 
 # Export ------------------------------------------------------------------
 
