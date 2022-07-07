@@ -1163,7 +1163,7 @@ export_census_multiple <- function(geographies,
   )
 }
 
-## SF1 (2000) ----
+## SF1 (2000, tidycensus) ----
 
 export_census_multiple(
   geographies = MAIN_GEOGRAPHIES,
@@ -1173,7 +1173,7 @@ export_census_multiple(
   output_directory = "output/tables/decennial"
 )
 
-## SF3 (2000) ----
+## SF3 (2000, tidycensus) ----
 
 export_census_multiple(
   geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
@@ -1183,7 +1183,7 @@ export_census_multiple(
   output_directory = "output/tables/decennial"
 )
 
-## SF1 (2010) ----
+## SF1 (2010, tidycensus) ----
 
 export_census_multiple(
   geographies = MAIN_GEOGRAPHIES,
@@ -1193,7 +1193,7 @@ export_census_multiple(
   output_directory = "output/tables/decennial"
 )
 
-## PL 94-171 (2020) ----
+## PL 94-171 (2020, tidycensus) ----
 
 export_census_multiple(
   geographies = setdiff(MAIN_GEOGRAPHIES, "zip code tabulation area"),
@@ -1203,7 +1203,7 @@ export_census_multiple(
   output_directory = "output/tables/decennial"
 )
 
-## ACS5 (2009-2012) ----
+## ACS5 (2009-2012, totalcensus) ----
 
 export_census_multiple(
   geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
@@ -1214,7 +1214,7 @@ export_census_multiple(
   census_fetch_function = get_totalcensus
 )
 
-## ACS5 (2013-2020) ----
+## ACS5 (2013-2020, tidycensus) ----
 
 export_census_multiple(
   geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
@@ -1224,7 +1224,7 @@ export_census_multiple(
   output_directory = "output/tables/acs5"
 )
 
-## ACS3 (2007-2013) ----
+## ACS3 (2007-2009, 2011-2013, tidycensus) ----
 
 export_census_multiple(
   geographies = c("state", "county"),
@@ -1234,7 +1234,8 @@ export_census_multiple(
   output_directory = "output/tables/acs3"
 )
 
-## ACS1 (2005) ----
+
+## ACS1 (2005, tidycensus) ----
 # B08301 + B08303 are not available in 2005
 
 export_census_multiple(
@@ -1250,7 +1251,7 @@ export_census_multiple(
   output_directory = "output/tables/acs1"
 )
 
-## ACS1 (2006-2019) ----
+## ACS1 (2006-2019, tidycensus) ----
 
 export_census_multiple(
   geographies = c("state", "county"),
