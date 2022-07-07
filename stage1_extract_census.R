@@ -2,6 +2,12 @@
 
 source("util.R")
 
+DECENNIAL_OUTPUT_DIR = "output/tables/decennial"
+ACS5_OUTPUT_DIR = "output/tables/acs5"
+ACS3_OUTPUT_DIR = "output/tables/acs3"
+ACS1_OUTPUT_DIR = "output/tables/acs1"
+DECENNIAL_COMBINED_OUTPUT_DIR = "output/tables/decennial-combined"
+
 # Formulas ----------------------------------------------------------------
 
 ## SF1 (2000) ----
@@ -1170,7 +1176,7 @@ export_census_multiple(
   years = 2000,
   datasets = "sf1",
   formulas = unlist(all_formulas_sf1_2000),
-  output_directory = "output/tables/decennial"
+  output_directory = DECENNIAL_OUTPUT_DIR
 )
 
 ## SF3 (2000, tidycensus) ----
@@ -1180,7 +1186,7 @@ export_census_multiple(
   years = 2000,
   datasets = "sf3",
   formulas = unlist(all_formulas_sf3),
-  output_directory = "output/tables/decennial"
+  output_directory = DECENNIAL_OUTPUT_DIR
 )
 
 ## SF1 (2010, tidycensus) ----
@@ -1190,7 +1196,7 @@ export_census_multiple(
   years = 2010,
   datasets = "sf1",
   formulas = unlist(all_formulas_sf1_2010),
-  output_directory = "output/tables/decennial"
+  output_directory = DECENNIAL_OUTPUT_DIR
 )
 
 ## PL 94-171 (2020, tidycensus) ----
@@ -1200,7 +1206,7 @@ export_census_multiple(
   years = 2020,
   datasets = "pl",
   formulas = unlist(all_formulas_pl),
-  output_directory = "output/tables/decennial"
+  output_directory = DECENNIAL_OUTPUT_DIR
 )
 
 ## ACS5 (2009-2012, totalcensus) ----
@@ -1210,7 +1216,7 @@ export_census_multiple(
   years = 2009:2012,
   datasets = "acs5",
   formulas = unlist(all_formulas_acs),
-  output_directory = "output/tables/acs5",
+  output_directory = ACS5_OUTPUT_DIR,
   census_fetch_function = get_totalcensus
 )
 
@@ -1220,7 +1226,7 @@ export_census_multiple(
   years = 2011:2012,
   datasets = "acs5",
   formulas = unlist(all_formulas_acs),
-  output_directory = "output/tables/acs5",
+  output_directory = ACS5_OUTPUT_DIR,
   census_fetch_function = get_totalcensus
 )
 
@@ -1231,7 +1237,7 @@ export_census_multiple(
   years = 2013:2020,
   datasets = "acs5",
   formulas = unlist(all_formulas_acs),
-  output_directory = "output/tables/acs5"
+  output_directory = ACS5_OUTPUT_DIR
 )
 
 ## ACS3 (2007-2009, 2011-2013, tidycensus) ----
@@ -1241,7 +1247,7 @@ export_census_multiple(
   years = c(2007:2009, 2011:2013), # TODO: 2010 is broken
   datasets = "acs3",
   formulas = unlist(all_formulas_acs),
-  output_directory = "output/tables/acs3"
+  output_directory = ACS3_OUTPUT_DIR
 )
 
 
@@ -1258,7 +1264,7 @@ export_census_multiple(
     },
     unlist(all_formulas_acs)
   ),
-  output_directory = "output/tables/acs1"
+  output_directory = ACS1_OUTPUT_DIR
 )
 
 ## ACS1 (2006-2019, tidycensus) ----
@@ -1268,5 +1274,116 @@ export_census_multiple(
   years = 2019:2006,
   datasets = "acs1",
   formulas = unlist(all_formulas_acs),
-  output_directory = "output/tables/acs1"
+  output_directory = ACS1_OUTPUT_DIR
 )
+
+# Combine Decennial years -------------------------------------------------
+# Decennial years have multiple data sets - combine them, preferring 100% sample
+# to less-than-100% sample data
+
+combine_decennial <- function(census_100,
+                              census_lt_100,
+                              output_joined,
+                              output_sources) {
+  message(sprintf("Reading 100%%-sample file %s", census_100))
+  census_100 <- fread(census_100)
+  message(sprintf("Reading <100%%-sample file %s", census_lt_100))
+  census_lt_100 <- fread(census_lt_100)
+  
+  columns_100 <- setdiff(names(census_100), c("year", "dataset", "GEOID"))
+  columns_lt_100 <- setdiff(names(census_lt_100), names(census_100))
+  
+  columns_to_keep <- c("year", "dataset", "GEOID", columns_lt_100)
+  joined <- census_lt_100[, ..columns_to_keep][census_100, on = list(year, GEOID)]
+  
+  sources <- data.frame(
+    variable = c(columns_100, columns_lt_100),
+    source = c(
+      rep(unique(census_100$dataset), length(columns_100)),
+      rep(unique(census_lt_100$dataset), length(columns_lt_100))
+    )
+  )
+  
+  message(sprintf("Writing joined file to %s", output_joined))
+  fwrite(joined, output_joined)
+  message(sprintf("Writing sources to %s", output_sources))
+  fwrite(sources, output_sources)
+}
+
+## SF1 + SF3 (2000) ----
+
+invisible(lapply(
+  setdiff(MAIN_GEOGRAPHIES, c("block", "zip code tabulation area")),
+  function(geography) {
+    combine_decennial(
+      census_100 = file.path(
+        DECENNIAL_OUTPUT_DIR,
+        sprintf("2000_%s_sf1.csv.gz", gsub(" ", "_", geography))
+      ),
+      census_lt_100 = file.path(
+        DECENNIAL_OUTPUT_DIR,
+        sprintf("2000_%s_sf3.csv.gz", gsub(" ", "_", geography))
+      ),
+      output_joined = file.path(
+        DECENNIAL_COMBINED_OUTPUT_DIR,
+        sprintf("2000_%s.csv.gz", gsub(" ", "_", geography))
+      ),
+      output_sources = file.path(
+        DECENNIAL_COMBINED_OUTPUT_DIR,
+        sprintf("2000_%s_sources.csv", gsub(" ", "_", geography))
+      )
+    )
+  }
+))
+
+## SF1 + ACS5 (2010) ----
+
+invisible(lapply(
+  setdiff(MAIN_GEOGRAPHIES, c("block", "zip code tabulation area")),
+  function(geography) {
+    combine_decennial(
+      census_100 = file.path(
+        DECENNIAL_OUTPUT_DIR,
+        sprintf("2010_%s_sf1.csv.gz", gsub(" ", "_", geography))
+      ),
+      census_lt_100 = file.path(
+        ACS5_OUTPUT_DIR,
+        sprintf("2010_%s_acs5.csv.gz", gsub(" ", "_", geography))
+      ),
+      output_joined = file.path(
+        DECENNIAL_COMBINED_OUTPUT_DIR,
+        sprintf("2010_%s.csv.gz", gsub(" ", "_", geography))
+      ),
+      output_sources = file.path(
+        DECENNIAL_COMBINED_OUTPUT_DIR,
+        sprintf("2010_%s_sources.csv", gsub(" ", "_", geography))
+      )
+    )
+  }
+))
+
+## PL + ACS5 (2020) ----
+
+invisible(lapply(
+  setdiff(MAIN_GEOGRAPHIES, c("block", "zip code tabulation area")),
+  function(geography) {
+    combine_decennial(
+      census_100 = file.path(
+        DECENNIAL_OUTPUT_DIR,
+        sprintf("2020_%s_pl.csv.gz", gsub(" ", "_", geography))
+      ),
+      census_lt_100 = file.path(
+        ACS5_OUTPUT_DIR,
+        sprintf("2020_%s_acs5.csv.gz", gsub(" ", "_", geography))
+      ),
+      output_joined = file.path(
+        DECENNIAL_COMBINED_OUTPUT_DIR,
+        sprintf("2020_%s.csv.gz", gsub(" ", "_", geography))
+      ),
+      output_sources = file.path(
+        DECENNIAL_COMBINED_OUTPUT_DIR,
+        sprintf("2020_%s_sources.csv", gsub(" ", "_", geography))
+      )
+    )
+  }
+))
