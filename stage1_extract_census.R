@@ -1332,7 +1332,7 @@ invisible(lapply(
       ),
       output_sources = file.path(
         DECENNIAL_COMBINED_OUTPUT_DIR,
-        sprintf("2000_sources.csv", gsub(" ", "_", geography))
+        "2000_sources.csv"
       )
     )
   }
@@ -1358,7 +1358,7 @@ invisible(lapply(
       ),
       output_sources = file.path(
         DECENNIAL_COMBINED_OUTPUT_DIR,
-        sprintf("2010_sources.csv", gsub(" ", "_", geography))
+        "2010_sources.csv"
       )
     )
   }
@@ -1384,7 +1384,7 @@ invisible(lapply(
       ),
       output_sources = file.path(
         DECENNIAL_COMBINED_OUTPUT_DIR,
-        sprintf("2020_sources.csv", gsub(" ", "_", geography))
+        "2020_sources.csv"
       )
     )
   }
