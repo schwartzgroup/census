@@ -1212,7 +1212,7 @@ export_census_multiple(
 ## ACS5 (2009-2012, totalcensus) ----
 
 export_census_multiple(
-  geographies = setdiff(MAIN_GEOGRAPHIES, "block", "zip code tabulation area"),
+  geographies = setdiff(MAIN_GEOGRAPHIES, c("block", "zip code tabulation area")),
   years = 2009:2012,
   datasets = "acs5",
   formulas = unlist(all_formulas_acs),
@@ -1310,6 +1310,8 @@ combine_decennial <- function(census_100,
   fwrite(sources, output_sources)
 }
 
+dir.create(DECENNIAL_COMBINED_OUTPUT_DIR, showWarnings = FALSE, recursive = TRUE)
+
 ## SF1 + SF3 (2000) ----
 
 invisible(lapply(
@@ -1330,7 +1332,7 @@ invisible(lapply(
       ),
       output_sources = file.path(
         DECENNIAL_COMBINED_OUTPUT_DIR,
-        sprintf("2000_%s_sources.csv", gsub(" ", "_", geography))
+        sprintf("2000_sources.csv", gsub(" ", "_", geography))
       )
     )
   }
@@ -1356,7 +1358,7 @@ invisible(lapply(
       ),
       output_sources = file.path(
         DECENNIAL_COMBINED_OUTPUT_DIR,
-        sprintf("2010_%s_sources.csv", gsub(" ", "_", geography))
+        sprintf("2010_sources.csv", gsub(" ", "_", geography))
       )
     )
   }
@@ -1382,7 +1384,7 @@ invisible(lapply(
       ),
       output_sources = file.path(
         DECENNIAL_COMBINED_OUTPUT_DIR,
-        sprintf("2020_%s_sources.csv", gsub(" ", "_", geography))
+        sprintf("2020_sources.csv", gsub(" ", "_", geography))
       )
     )
   }
