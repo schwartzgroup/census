@@ -74,6 +74,16 @@ TIGER_DOWNLOAD_TEMPLATES = list(
     "2020" = "https://www2.census.gov/geo/tiger/TIGER2020/METDIV/tl_2020_us_metdiv.zip"
   ),
   
+  # Tribal
+  tribal_tract = c(
+      "2010" = "https://www2.census.gov/geo/tiger/TIGER2010/TTRACT/2010/tl_2010_us_ttract10.zip",
+      "2020" = "https://www2.census.gov/geo/tiger/TIGER2020/TTRACT/tl_2020_us_ttract.zip"
+  ),
+  tribal_block_group = c(
+      "2010" = "https://www2.census.gov/geo/tiger/TIGER2010/TBG/2010/tl_2010_us_tbg10.zip",
+      "2020" = "https://www2.census.gov/geo/tiger/TIGER2020/TBG/tl_2020_us_tbg.zip"
+  ),
+  
   # Roads
   roads = c(
       "2010" = "https://www2.census.gov/geo/tiger/TIGER2010/ROADS/*",
@@ -141,7 +151,7 @@ for (geography in names(TIGER_DOWNLOAD_TEMPLATES)) {
       message(sprintf("Downloading %s %s", year, geography))
       for (url in fill_tiger_template(years[[year]])) {
         if (file.exists(file.path(
-          ouput_directory, gsub(".zip", ".shp", basename(url))
+          output_directory, gsub(".zip", ".shp", basename(url))
         ))) {
           message(sprintf("Skipping URL: %s", url))
         } else {
