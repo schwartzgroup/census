@@ -12,13 +12,20 @@ options(timeout = 60 * 20)
 MRLC_ZIPS = list(
   landcover = c(
     "https://s3-us-west-2.amazonaws.com/mrlc/nlcd_2001_land_cover_l48_20210604.zip",
+    "https://s3-us-west-2.amazonaws.com/mrlc/NLCD_2001_Land_Cover_AK_20200724.zip",
+    "https://s3-us-west-2.amazonaws.com/mrlc/HI_landcover_wimperv_9-30-08_se5.zip",
+    "https://s3-us-west-2.amazonaws.com/mrlc/PR_landcover_wimperv_10-28-08_se5.zip",
+
     "https://s3-us-west-2.amazonaws.com/mrlc/nlcd_2011_land_cover_l48_20210604.zip",
-    "https://s3-us-west-2.amazonaws.com/mrlc/nlcd_2019_land_cover_l48_20210604.zip"
+    "https://s3-us-west-2.amazonaws.com/mrlc/NLCD_2011_Land_Cover_AK_20200724.zip"
   ),
   imperviousness = c(
     "https://s3-us-west-2.amazonaws.com/mrlc/nlcd_2001_impervious_l48_20210604.zip",
-    "https://s3-us-west-2.amazonaws.com/mrlc/nlcd_2011_impervious_l48_20210604.zip",
-    "https://s3-us-west-2.amazonaws.com/mrlc/nlcd_2019_impervious_l48_20210604.zip"
+    "https://s3-us-west-2.amazonaws.com/mrlc/NLCD_2001_Impervious_AK_20200724.zip",
+    "https://s3-us-west-2.amazonaws.com/mrlc/HI_masked_imperv_9-30-08.zip",
+    "https://s3-us-west-2.amazonaws.com/mrlc/PR_masked_imperv_10-25-08.zip",
+
+    "https://s3-us-west-2.amazonaws.com/mrlc/nlcd_2011_impervious_l48_20210604.zip"
   )
 )
 
