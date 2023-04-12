@@ -193,10 +193,14 @@ get_tidycensus_cached <- function(geography,
     message("Fetching new data")
   
     if (geography %in% GEOGRAPHIES_NO_STATE) {
-      new_data <- dcast(
-        as.data.table(suppressMessages(fetch_function(
+        new_data <- as.data.table(suppressMessages(fetch_function(
             geography, variables_to_fetch, year = year, ...
-        ))),
+        )))
+      if (geography %in% c("zip code tabulation area", "zcta")) {
+        new_data[, GEOID := tstrsplit(NAME, " ")[[2]]]
+      }
+      new_data <- dcast(
+        new_data,
         GEOID ~ variable,
         value.var = value_column
       )
