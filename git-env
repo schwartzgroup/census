@@ -1,0 +1,3 @@
+# Environment variables to facilitate non-networked git directory
+export GIT_DIR=/home/edgar/git/census
+export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
