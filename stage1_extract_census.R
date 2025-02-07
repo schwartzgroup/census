@@ -79,6 +79,7 @@ all_formulas_sf1_2000 <- list(
     pct_households_single_father ~ P018003 / P015001,
     pct_households_single_mother ~ P018004 / P015001
     # pct_public_assistance ~ SF3 only
+    # pct_food_stamps ~ ACS only
   ),
   
   # Universe: Occupied housing units
@@ -94,6 +95,7 @@ all_formulas_sf1_2000 <- list(
     # pct_heating_solar ~ SF3 only
     # pct_heating_other ~ SF3 only
     # pct_heating_none ~ SF3 only
+    # pct_complete_plumbing ~ SF3 only
   ),
   
   # Universe: Housing units
@@ -121,6 +123,12 @@ all_formulas_sf1_2000 <- list(
     # pct_built_before_1939 ~ SF3 only
     # med_year_built ~ SF3 only
   ),
+  
+  # Universe: Renter-occupied housing units
+  # SF3 only
+  
+  # Universe: Owner-occupied housing units
+  # SF3 only
   
   # Universe: Population 16 years and over (employment)
   # SF3 only
@@ -245,6 +253,7 @@ all_formulas_sf3 <- list(
     # pct_households_single_father ~ moved to Occupied housing units universe for SF3
     # pct_households_single_mother ~ moved to Occupied housing units universe for SF3
     pct_public_assistance ~ P064002 / P014001
+    # pct_food_stamps ~ ACS only
   ),
   
   # Universe: Occupied housing units
@@ -254,6 +263,7 @@ all_formulas_sf3 <- list(
     pct_households_single_father ~ (H019013 + H019075) / H007001,
     pct_households_single_mother ~ (H019021 + H019083) / H007001,
     pct_renting ~ H007003 / H007001,
+    
     pct_heating_utility_gas ~ H040002 / H007001,
     pct_heating_gas_tank ~ H040003 / H007001,
     pct_heating_electricity ~ H040004 / H007001,
@@ -262,7 +272,9 @@ all_formulas_sf3 <- list(
     pct_heating_wood ~ H040007 / H007001,
     pct_heating_solar ~ H040008 / H007001,
     pct_heating_other ~ H040009 / H007001,
-    pct_heating_none ~ H040010 / H007001
+    pct_heating_none ~ H040010 / H007001,
+    
+    pct_complete_plumbing ~ (H048003 + H048006) / H007001
   ),
   
   # Universe: Housing units
@@ -298,8 +310,10 @@ all_formulas_sf3 <- list(
   
   # Universe: Population 16 years and over (employment)
   pop_16y_and_over = c(
+    pct_labor_force ~ (P043003 + P043010) / P043001,
     # (Unemployed by sex) / (Labor force by sex)
     pct_unemployed ~ (P043007 + P043014) / (P043003 + P043010)
+    # mean_hours_worked ~ ACS only
   ),
   
   # Universe: Population 18 years and over (education)
@@ -371,6 +385,12 @@ all_formulas_sf3 <- list(
     pct_travel_45_to_59_min ~ P031012 / P031002,
     pct_travel_60_to_89_min ~ P031013 / P031002,
     pct_travel_gt_90_min ~ P031014 / P031002
+  ),
+  
+  # Universe: Population for whom poverty status is determined
+  poverty = c(
+    n_known_poverty ~ P087001,
+    pct_poverty ~ P087002 / P087001
   ),
   
   # Currency-based variables
@@ -529,6 +549,7 @@ all_formulas_sf1_2010 <- list(
     pct_households_single_father ~ P018005 / P018001,
     pct_households_single_mother ~ P018006 / P018001
     # pct_public_assistance ~ ACS only
+    # pct_food_stamps ~ ACS only
   ),
   
   # Universe: Occupied housing units
@@ -544,6 +565,7 @@ all_formulas_sf1_2010 <- list(
     # pct_heating_solar ~ ACS only
     # pct_heating_other ~ ACS only
     # pct_heating_none ~ ACS only
+    # pct_complete_plumbing ~ ACS only
   ),
   
   # Universe: Housing units
@@ -571,6 +593,12 @@ all_formulas_sf1_2010 <- list(
     # pct_built_before_1939 ~ ACS only
     # med_year_built ~ ACS only
   ),
+  
+  # Universe: Renter-occupied housing units
+  # SF3 only
+  
+  # Universe: Owner-occupied housing units
+  # SF3 only
   
   # Universe: Population 16 years and over (employment)
   # ACS only
@@ -806,13 +834,16 @@ all_formulas_acs <- list(
     mean_household_size ~ B25010_001,
     pct_households_single_father ~ B11001_005 / B11001_001,
     pct_households_single_mother ~ B11001_006 / B11001_001,
-    pct_public_assistance ~ B19057_002 / B11001_001
+    pct_public_assistance ~ B19057_002 / B11001_001,
+    pct_food_stamps ~ B22003_002 / B11001_001
   ),
   
   # Universe: Occupied housing units
   occupied_housing_units = c(
     n_occupied_housing_units ~ B25003_001,
+    
     pct_renting ~ B25003_003 / B25003_001,
+    
     pct_heating_utility_gas ~ B25040_002 / B25003_001,
     pct_heating_gas_tank ~ B25040_003 / B25003_001,
     pct_heating_electricity ~ B25040_004 / B25003_001,
@@ -821,7 +852,9 @@ all_formulas_acs <- list(
     pct_heating_wood ~ B25040_007 / B25003_001,
     pct_heating_solar ~ B25040_008 / B25003_001,
     pct_heating_other ~ B25040_009 / B25003_001,
-    pct_heating_none ~ B25040_001 / B25003_001
+    pct_heating_none ~ B25040_001 / B25003_001,
+    
+    pct_complete_plumbing ~ (B25049_003 + B25049_006) / B25003_001
   ),
   
   # Universe: Housing units
@@ -852,6 +885,14 @@ all_formulas_acs <- list(
   
   # Universe: Population 16 years and over (employment)
   pop_16y_and_over = c(
+    pct_labor_force ~ (
+      B23001_004 + B23001_011 + B23001_018 + B23001_025 + B23001_032 +
+      B23001_039 + B23001_046 + B23001_053 + B23001_060 + B23001_067 +
+      B23001_074 + B23001_079 + B23001_084 + B23001_090 + B23001_097 +
+      B23001_104 + B23001_111 + B23001_118 + B23001_125 + B23001_132 +
+      B23001_139 + B23001_146 + B23001_153 + B23001_160 + B23001_165 +
+      B23001_170
+    ) / B23001_001,
     # Long formulation for 2009 + 2010 ACS compatibility
     pct_unemployed ~ (
       # Unemployed by age
@@ -869,7 +910,8 @@ all_formulas_acs <- list(
       B23001_104 + B23001_111 + B23001_118 + B23001_125 + B23001_132 +
       B23001_139 + B23001_146 + B23001_153 + B23001_160 + B23001_165 +
       B23001_170
-    )
+    ),
+    mean_hours_worked ~ B23020_001
   ),
   
   # Universe: Population 18 years and over (education)
@@ -939,6 +981,12 @@ all_formulas_acs <- list(
     pct_travel_gt_90_min ~ B08303_013 / B08303_001
   ),
   
+  # Universe: Population for whom poverty status is determined
+  poverty = c(
+    n_known_poverty ~ B17001_001,
+    pct_poverty ~ B17001_002 / B17001_001
+  ),
+    
   # Currency-based variables
   currency = c(
     med_household_income ~ B19013_001,
