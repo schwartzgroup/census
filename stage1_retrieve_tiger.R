@@ -51,6 +51,11 @@ TIGER_DOWNLOAD_TEMPLATES = list(
     "2010" = "https://www2.census.gov/geo/tiger/TIGER2010/PUMA5/2010/tl_2010_01_puma10.zip",
     "2020" = "https://www2.census.gov/geo/tiger/TIGER2020/PUMA/tl_2020_01_puma10.zip"
   ),
+  place = c(
+    "2000" = "https://www2.census.gov/geo/tiger/TIGER2010/PLACE/2000/tl_2010_{STATE_FIPS}_place00.zip",
+    "2010" = "https://www2.census.gov/geo/tiger/TIGER2010/PLACE/2010/tl_2010_{STATE_FIPS}_place10.zip",
+    "2020" = "https://www2.census.gov/geo/tiger/TIGER2020/PLACE/tl_2020_{STATE_FIPS}_place.zip"
+  ),
   
   # Multi-state
   uac = c(
