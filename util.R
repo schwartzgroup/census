@@ -358,11 +358,12 @@ get_census <- function(geography,
 explain <- function(year,
                     dataset,
                     formula,
-                    width = NULL,
+                    # width = NULL,
                     delimiter = "$",
                     get_variables = get_tidycensus_variables_cached) {
   variables <- get_variables(year, dataset)
-  result <- format(formula, width = width)
+  # result <- format(formula, width = width)
+  result <- deparse1(formula)
   sapply(
     rhs_variables(formula),
     function(variable) {
