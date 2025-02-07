@@ -308,6 +308,37 @@ all_formulas_sf3 <- list(
     pct_built_1990_to_1998 ~ (H034004 + H034003 + (H034002 / 2)) / H030001
   ),
   
+  # Universe:  Renter-occupied housing units
+  renter_occupied_housing_units = c(
+    n_renter_occupied_units ~ H069001,
+    median_rent_pct_hh_income ~ H070001,
+    pct_renting_lt_10_pct_hh_income ~ H069002 / H069001,
+    pct_renting_10_to_14.9_pct_hh_income ~ H069003 / H069001,
+    pct_renting_15_to_19.9_pct_hh_income ~ H069004 / H069001,
+    pct_renting_20_to_24.9_pct_hh_income ~ H069005 / H069001,
+    pct_renting_25_to_29.9_pct_hh_income ~ H069006 / H069001,
+    pct_renting_30_to_34.9_pct_hh_income ~ H069007 / H069001,
+    pct_renting_35_to_39.9_pct_hh_income ~ H069008 / H069001,
+    pct_renting_40_to_40.9_pct_hh_income ~ H069009 / H069001,
+    pct_renting_geq_50_pct_hh_income ~ H069010 / H069001
+  ),
+  
+  # Universe: Owner-occupied housing units
+  owner_occupied_housing_units = c(
+    n_owner_occupied_units ~ H094001,
+    pct_owner_occupied_mortgage ~ H094002 / H094001,
+    median_mortgage_pct_hh_income ~ H095002,
+    pct_mortgage_10_pct_hh_income ~ H094003 / H094002,
+    pct_mortgage_10_to_14.9_pct_hh_income ~ H094004 / H094002,
+    pct_mortgage_15_to_19.9_pct_hh_income ~ H094005 / H094002,
+    pct_mortgage_20_to_24.9_pct_hh_income ~ H094006 / H094002,
+    pct_mortgage_25_to_29.9_pct_hh_income ~ H094007 / H094002,
+    pct_mortgage_30_to_34.9_pct_hh_income ~ H094008 / H094002,
+    pct_mortgage_35_to_39.9_pct_hh_income ~ H094009 / H094002,
+    pct_mortgage_40_to_40.9_pct_hh_income ~ H094010 / H094002,
+    pct_mortgage_50_or_more_pct_hh_income ~ H094011 / H094002
+  ),
+  
   # Universe: Population 16 years and over (employment)
   pop_16y_and_over = c(
     pct_labor_force ~ (P043003 + P043010) / P043001,
@@ -346,6 +377,108 @@ all_formulas_sf3 <- list(
       PCT025010 + PCT025018 + PCT025026 + PCT025034 + PCT025042 +
       PCT025051 + PCT025059 + PCT025067 + PCT025075 + PCT025083
     ) / PCT025001
+  ),
+  
+  # Universe: Population 25 years and over (education by sex by race)
+  pop_25y_and_over = c(
+    pct_edu_lt_9th_grade_white ~ (P148A003 + P148A011) / P037001,
+    pct_edu_9th_to_12th_grade_white ~ (P148A004 + P148A012) / P037001,
+    pct_edu_high_school_white ~ (P148A005 + P148A013) / P037001,
+    pct_edu_some_college_white ~ (P148A006 + P148A014) / P037001,
+    pct_edu_associate_white ~ (P148A007 + P148A015) / P037001,
+    pct_edu_bachelors_white ~ (P148A008 + P148A016) / P037001,
+    pct_edu_graduate_or_professional_white ~ (P148A009 + P148A017) / P037001,
+    
+    pct_edu_lt_9th_grade_black ~ (P148B003 + P148B011) / P037001,
+    pct_edu_9th_to_12th_grade_black ~ (P148B004 + P148B012) / P037001,
+    pct_edu_high_school_black ~ (P148B005 + P148B013) / P037001,
+    pct_edu_some_college_black ~ (P148B006 + P148B014) / P037001,
+    pct_edu_associate_black ~ (P148B007 + P148B015) / P037001,
+    pct_edu_bachelors_black ~ (P148B008 + P148B016) / P037001,
+    pct_edu_graduate_or_professional_black ~ (P148B009 + P148B017) / P037001,
+    
+    pct_edu_lt_9th_grade_black ~ (P148B003 + P148B011) / P037001,
+    pct_edu_9th_to_12th_grade_black ~ (P148B004 + P148B012) / P037001,
+    pct_edu_high_school_black ~ (P148B005 + P148B013) / P037001,
+    pct_edu_some_college_black ~ (P148B006 + P148B014) / P037001,
+    pct_edu_associate_black ~ (P148B007 + P148B015) / P037001,
+    pct_edu_bachelors_black ~ (P148B008 + P148B016) / P037001,
+    pct_edu_graduate_or_professional_black ~ (P148B009 + P148B017) / P037001,
+    
+    # pct_edu_lt_9th_grade_native ~ (P148C003 + P148C011) / P037001,
+    # pct_edu_9th_to_12th_grade_native ~ (P148C004 + P148C012) / P037001,
+    # pct_edu_high_school_native ~ (P148C005 + P148C013) / P037001,
+    # pct_edu_some_college_native ~ (P148C006 + P148C014) / P037001,
+    # pct_edu_associate_native ~ (P148C007 + P148C015) / P037001,
+    # pct_edu_bachelors_native ~ (P148C008 + P148C016) / P037001,
+    # pct_edu_graduate_or_professional_native ~ (P148C009 + P148C017) / P037001,
+    # 
+    # pct_edu_lt_9th_grade_asian ~ (P148D003 + P148D011) / P037001,
+    # pct_edu_9th_to_12th_grade_asian ~ (P148D004 + P148D012) / P037001,
+    # pct_edu_high_school_asian ~ (P148D005 + P148D013) / P037001,
+    # pct_edu_some_college_asian ~ (P148D006 + P148D014) / P037001,
+    # pct_edu_associate_asian ~ (P148D007 + P148D015) / P037001,
+    # pct_edu_bachelors_asian ~ (P148D008 + P148D016) / P037001,
+    # pct_edu_graduate_or_professional_asian ~ (P148D009 + P148D017) / P037001,
+    # 
+    # pct_edu_lt_9th_grade_hispanic ~ (P148H003 + P148H011) / P037001,
+    # pct_edu_9th_to_12th_grade_hispanic ~ (P148H004 + P148H012) / P037001,
+    # pct_edu_high_school_hispanic ~ (P148H005 + P148H013) / P037001,
+    # pct_edu_some_college_hispanic ~ (P148H006 + P148H014) / P037001,
+    # pct_edu_associate_hispanic ~ (P148H007 + P148H015) / P037001,
+    # pct_edu_bachelors_hispanic ~ (P148H008 + P148H016) / P037001,
+    # pct_edu_graduate_or_professional_hispanic ~ (P148H009 + P148H017) / P037001
+    
+    # Harmonize with ACS
+    pct_edu_lt_high_school_white ~ (
+      P148A003 + P148A004 + P148A011 + P148A012
+    ) / P037001,
+    pct_edu_some_college_or_associate_white ~ (
+      P148A006 + P148A007 + P148A014 + P148A015
+    ) / P037001,
+    pct_edu_bachelors_or_higher_white ~ (
+      P148A008 + P148A009 + P148A016 + P148A017
+    ) / P037001,
+    
+    pct_edu_lt_high_school_black ~ (
+      P148B003 + P148B004 + P148B011 + P148B012
+    ) / P037001,
+    pct_edu_some_college_or_associate_black ~ (
+      P148B006 + P148B007 + P148B014 + P148B015
+    ) / P037001,
+    pct_edu_bachelors_or_higher_black ~ (
+      P148B008 + P148B009 + P148B016 + P148B017
+    ) / P037001#,
+    # 
+    # pct_edu_lt_high_school_native ~ (
+    #   P148C003 + P148C004 + P148C011 + P148C012
+    # ) / P037001,
+    # pct_edu_some_college_or_associate_native ~ (
+    #   P148C006 + P148C007 + P148C014 + P148C015
+    # ) / P037001,
+    # pct_edu_bachelors_or_higher_native ~ (
+    #   P148C008 + P148C009 + P148C016 + P148C017
+    # ) / P037001,
+    # 
+    # pct_edu_lt_high_school_asian ~ (
+    #   P148D003 + P148D004 + P148D011 + P148D012
+    # ) / P037001,
+    # pct_edu_some_college_or_associate_asian ~ (
+    #   P148D006 + P148D007 + P148D014 + P148D015
+    # ) / P037001,
+    # pct_edu_bachelors_or_higher_asian ~ (
+    #   P148D008 + P148D009 + P148D016 + P148D017
+    # ) / P037001,
+    # 
+    # pct_edu_lt_high_school_hispanic ~ (
+    #   P148H003 + P148H004 + P148H011 + P148H012
+    # ) / P037001,
+    # pct_edu_some_college_or_associate_hispanic ~ (
+    #   P148H006 + P148H007 + P148H014 + P148H015
+    # ) / P037001,
+    # pct_edu_bachelors_or_higher_hispanic ~ (
+    #   P148H008 + P148H009 + P148H016 + P148H017
+    # ) / P037001
   ),
   
   # Universe: Workers 16 years and over (transportation)
@@ -883,6 +1016,37 @@ all_formulas_acs <- list(
     med_year_built ~ B25035_001
   ),
   
+  # Universe: Renter-occupied housing units
+  renter_occupied_housing_units = c(
+    n_renter_occupied_units ~ B25070_001,
+    median_rent_pct_hh_income ~ B25071_001,
+    pct_renting_10_pct_hh_income ~ B25070_002 / B25070_001,
+    pct_renting_10_to_14.9_pct_hh_income ~ B25070_003 / B25070_001,
+    pct_renting_15_to_19.9_pct_hh_income ~ B25070_004 / B25070_001,
+    pct_renting_20_to_24.9_pct_hh_income ~ B25070_005 / B25070_001,
+    pct_renting_25_to_29.9_pct_hh_income ~ B25070_006 / B25070_001,
+    pct_renting_30_to_34.9_pct_hh_income ~ B25070_007 / B25070_001,
+    pct_renting_35_to_39.9_pct_hh_income ~ B25070_008 / B25070_001,
+    pct_renting_40_to_40.9_pct_hh_income ~ B25070_009 / B25070_001,
+    pct_renting_50_or_more_pct_hh_income ~ B25070_010 / B25070_001
+  ),
+  
+  # Universe: Owner-occupied housing units
+  owner_occupied_housing_units = c(
+    n_owner_occupied_units ~ B25091_001,
+    pct_owner_occupied_mortgage ~ B25091_002 / B25091_001,
+    median_mortgage_pct_hh_income ~ B25092_002,
+    pct_mortgage_10_pct_hh_income ~ B25091_003 / B25091_002,
+    pct_mortgage_10_to_14.9_pct_hh_income ~ B25091_004 / B25091_002,
+    pct_mortgage_15_to_19.9_pct_hh_income ~ B25091_005 / B25091_002,
+    pct_mortgage_20_to_24.9_pct_hh_income ~ B25091_006 / B25091_002,
+    pct_mortgage_25_to_29.9_pct_hh_income ~ B25091_007 / B25091_002,
+    pct_mortgage_30_to_34.9_pct_hh_income ~ B25091_008 / B25091_002,
+    pct_mortgage_35_to_39.9_pct_hh_income ~ B25091_009 / B25091_002,
+    pct_mortgage_40_to_40.9_pct_hh_income ~ B25091_010 / B25091_002,
+    pct_mortgage_50_or_more_pct_hh_income ~ B25091_011 / B25091_002
+  ),
+  
   # Universe: Population 16 years and over (employment)
   pop_16y_and_over = c(
     pct_labor_force ~ (
@@ -944,6 +1108,34 @@ all_formulas_acs <- list(
       B15001_010 + B15001_018 + B15001_026 + B15001_034 + B15001_042 +
       B15001_051 + B15001_059 + B15001_067 + B15001_075 + B15001_083
     ) / B15001_001
+  ),
+  
+  # Universe: Population 25 years and over (education by sex by race)
+  pop_25y_and_over = c(
+    pct_edu_lt_high_school_white ~ (C15002A_003 + C15002A_008) / B15002_001,
+    pct_edu_high_school_white ~ (C15002A_004 + C15002A_009) / B15002_001,
+    pct_edu_some_college_or_associate_white ~ (C15002A_005 + C15002A_010) / B15002_001,
+    pct_edu_bachelors_or_higher_white ~ (C15002A_006 + C15002A_011) / B15002_001,
+    
+    pct_edu_lt_high_school_black ~ (C15002B_003 + C15002B_008) / B15002_001,
+    pct_edu_high_school_black ~ (C15002B_004 + C15002B_009) / B15002_001,
+    pct_edu_some_college_or_associate_black ~ (C15002B_005 + B15002_001) / B15002_001,
+    pct_edu_bachelors_or_higher_black ~ (C15002B_006 + C15002B_011) / B15002_001#,
+    # 
+    # pct_edu_lt_high_school_native ~ (C15002C_003 + C15002C_008) / B15002_001,
+    # pct_edu_high_school_native ~ (C15002C_004 + C15002C_009) / B15002_001,
+    # pct_edu_some_college_or_associate_native ~ (C15002C_005 + C15002C_010) / B15002_001,
+    # pct_edu_bachelors_or_higher_native ~ (C15002C_006 + C15002C_011) / B15002_001,
+    # 
+    # pct_edu_lt_high_school_asian ~ (C15002D_003 + C15002D_008) / B15002_001,
+    # pct_edu_high_school_asian ~ (C15002D_004 + C15002D_009) / C15002D_001,
+    # pct_edu_some_college_or_associate_asian ~ (C15002D_005 + C15002D_010) / B15002_001,
+    # pct_edu_bachelors_or_higher_asian ~ (C15002D_006 + C15002D_011) / B15002_001,
+    # 
+    # pct_edu_lt_high_school_hispanic ~ (C15002H_003 + C15002H_008) / B15002_001,
+    # pct_edu_high_school_hispanic ~ (C15002H_004 + C15002H_009) / B15002_001,
+    # pct_edu_some_college_or_associate_hispanic ~ (C15002H_005 + C15002H_010) / B15002_001,
+    # pct_edu_bachelors_or_higher_hispanic ~ (C15002H_006 + C15002H_011) / B15002_001
   ),
   
   # Universe: Workers 16 years and over (transportation)
