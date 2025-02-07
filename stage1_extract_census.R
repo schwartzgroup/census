@@ -1,4 +1,6 @@
 #!/usr/bin/env Rscript
+#
+# Download and extract variables from the Census API or bulk downloads
 
 source("util.R")
 
@@ -896,6 +898,168 @@ all_formulas_pl <- list(
   
 )
 
+## DHC (2020) ----
+
+all_formulas_dhc_2020 <- list(
+  
+  # Universe: Total population
+  total_population = c(
+    population ~ P1_001N,
+    
+    # Race + ethnicity
+    pct_female ~ P12_026N / P1_001N,
+    pct_white ~ P3_002N / P1_001N,
+    pct_black ~ P3_003N / P1_001N,
+    pct_native ~ P3_004N / P1_001N,
+    pct_asian ~ P3_005N / P1_001N,
+    pct_two_or_more_races ~ P3_008N / P1_001N,
+    pct_hispanic_white ~ P5_011N / P1_001N,
+    pct_hispanic_black ~ P5_012N / P1_001N,
+    pct_hispanic_native ~ P5_013N / P1_001N,
+    pct_hispanic_asian ~ P5_014N / P1_001N,
+    pct_hispanic_two_or_more_races ~ P5_017N / P1_001N,
+    pct_non_hispanic_white ~ P5_003N / P1_001N,
+    pct_non_hispanic_black ~ P5_004N / P1_001N,
+    pct_non_hispanic_native ~ P5_005N / P1_001N,
+    pct_non_hispanic_asian ~ P5_006N / P1_001N,
+    pct_non_hispanic_two_or_more_races ~ P5_009N / P1_001N,
+    pct_hispanic ~ P5_010N / P1_001N,
+    # pct_foreign_born ~ B05006_001 / P1_001N,
+    
+    # Compatibility with 1990 Decennial Census
+    pct_asian_pacific_islander ~ (P3_005N + P3_006N) / P1_001N,
+    pct_hispanic_asian_pacific_islander ~ (P5_014N + P5_015N) / P1_001N,
+    pct_non_hispanic_asian_pacific_islander ~ (P5_006N + P5_007N) / P1_001N,
+
+    # Age
+    pct_age_under_5 ~ (P12_003N + P12_027N) / P1_001N,
+    pct_age_5_to_9 ~ (P12_004N + P12_028N) / P1_001N,
+    pct_age_10_to_14 ~ (P12_005N + P12_029N) / P1_001N,
+    pct_age_15_to_17 ~ (P12_006N + P12_030N) / P1_001N,
+    pct_age_18_to_19 ~ (P12_007N + P12_031N) / P1_001N,
+    pct_age_20 ~ (P12_008N + P12_032N) / P1_001N,
+    pct_age_21 ~ (P12_009N + P12_033N) / P1_001N,
+    pct_age_22_to_24 ~ (P12_010N + P12_034N) / P1_001N,
+    pct_age_25_to_29 ~ (P12_011N + P12_035N) / P1_001N,
+    pct_age_30_to_34 ~ (P12_012N + P12_036N) / P1_001N,
+    pct_age_35_to_39 ~ (P12_013N + P12_037N) / P1_001N,
+    pct_age_40_to_44 ~ (P12_014N + P12_038N) / P1_001N,
+    pct_age_45_to_49 ~ (P12_015N + P12_039N) / P1_001N,
+    pct_age_50_to_54 ~ (P12_016N + P12_040N) / P1_001N,
+    pct_age_55_to_59 ~ (P12_017N + P12_041N) / P1_001N,
+    pct_age_60_to_61 ~ (P12_018N + P12_042N) / P1_001N,
+    pct_age_62_to_64 ~ (P12_019N + P12_043N) / P1_001N,
+    pct_age_65_to_66 ~ (P12_020N + P12_044N) / P1_001N,
+    pct_age_67_to_69 ~ (P12_021N + P12_045N) / P1_001N,
+    pct_age_70_to_74 ~ (P12_022N + P12_046N) / P1_001N,
+    pct_age_75_to_79 ~ (P12_023N + P12_047N) / P1_001N,
+    pct_age_80_to_84 ~ (P12_024N + P12_048N) / P1_001N,
+    pct_age_over_85 ~ (P12_025N + P12_049N) / P1_001N,
+    
+    # Compatibility with 1990 Decennial Census
+    pct_age_65_to_69 ~ (P12_020N + P12_021N + P12_044N + P12_045N) / P1_001N
+  ),
+  
+  # Universe: Households
+  households = c(
+    n_households ~ P16_001N,
+    # mean_household_size ~ P017001, unavailable?
+    pct_households_single_father ~ P16_005N / P16_001N,
+    pct_households_single_mother ~ P16_006N / P16_001N
+    # pct_public_assistance ~ ACS only
+    # pct_food_stamps ~ ACS only
+  ),
+  
+  # Universe: Occupied housing units
+  occupied_housing_units = c(
+    n_occupied_housing_units ~ H4_001N,
+    pct_renting ~ H4_004N / H1_001N
+    # pct_heating_utility_gas ~ ACS only
+    # pct_heating_gas_tank ~ ACS only
+    # pct_heating_electricity ~ ACS only
+    # pct_heating_oil ~ ACS only
+    # pct_heating_coal ~ ACS only
+    # pct_heating_wood ~ ACS only
+    # pct_heating_solar ~ ACS only
+    # pct_heating_other ~ ACS only
+    # pct_heating_none ~ ACS only
+    # pct_complete_plumbing ~ ACS only
+  ),
+  
+  # Universe: Housing units
+  housing_units = c(
+    n_housing_units ~ H1_001N
+    # pct_housing_standalone ~ ACS only
+    # pct_housing_1_unit ~ ACS only
+    # pct_housing_2_units ~ ACS only
+    # pct_housing_3_to_4_units ~ ACS only
+    # pct_housing_5_to_9_units ~ ACS only
+    # pct_housing_10_to_19_units ~ ACS only
+    # pct_housing_20_to_49_units ~ ACS only
+    # pct_housing_gt_50_units ~ ACS only
+    # pct_housing_mobile_home ~ ACS only
+    # pct_housing_vehicle ~ ACS only
+    # pct_built_2014_onwards ~ ACS only
+    # pct_built_2010_to_2013 ~ ACS only
+    # pct_built_2000_to_2009 ~ ACS only
+    # pct_built_1990_to_1999 ~ ACS only
+    # pct_built_1980_to_1989 ~ ACS only
+    # pct_built_1970_to_1979 ~ ACS only
+    # pct_built_1960_to_1969 ~ ACS only
+    # pct_built_1950_to_1959 ~ ACS only
+    # pct_built_1940_to_1949 ~ ACS only
+    # pct_built_before_1939 ~ ACS only
+    # med_year_built ~ ACS only
+  ),
+  
+  # Universe: Renter-occupied housing units
+  # SF3 only
+  
+  # Universe: Owner-occupied housing units
+  # SF3 only
+  
+  # Universe: Population 16 years and over (employment)
+  # ACS only
+  
+  # Universe: Population 18 years and over (education)
+  # ACS only
+  
+  # Universe: Workers 16 years and over (transportation)
+  # ACS only
+  
+  # Universe: Workers 16 years and over who did not work at home
+  # ACS only
+  
+  # Currency-based variables
+  # ACS only
+  
+  indices = c(
+    # Ethnic fractionalization
+    #
+    # Alesina, A., Devleeschauwer, A., Easterly, W., Kurlat, S., & Wacziarg, R.
+    # (2003). Fractionalization. Journal of Economic Growth, 8(2), 155–194.
+    # https://doi.org/10.1023/A:1024471506938
+    #
+    # ethnic_fractionalization = 1 - (
+    #   (non_hispanic_white / population)^2 +
+    #   (non_hispanic_black / population)^2 +
+    #   (non_hispanic_asian / population)^2 +
+    #   (hispanic / population)^2
+    # )
+    ethnic_fractionalization ~ 1 - (
+      (P5_003N / P1_001N)^2 +
+      (P5_004N / P1_001N)^2 +
+      (P5_006N / P1_001N)^2 +
+      (P5_010N / P1_001N)^2
+    )
+    
+    # Townsend Index
+    # ACS only
+    
+  )
+  
+)
+
 ## ACS (2005-2020) ----
 # NOTE: 2009-2020 ACS5 are unavailable from tidycensus
 
@@ -1344,13 +1508,19 @@ get_census_multiple <- function(geographies,
   }
 }
 
-## SF1 (2000) ----
-
 # get_census_multiple(
 #   geographies = MAIN_GEOGRAPHIES,
 #   years = 2000,
 #   datasets = "sf1",
 #   formulas = unlist(all_formulas_sf1_2000),
+#   discard = TRUE
+# )
+
+# get_census_multiple(
+#   geographies = MAIN_GEOGRAPHIES,
+#   years = 2020,
+#   datasets = "dhc",
+#   formulas = unlist(all_formulas_dhc_2020),
 #   discard = TRUE
 # )
 
@@ -1441,11 +1611,22 @@ export_census_multiple(
 
 ## PL 94-171 (2020, tidycensus) ----
 
+# ZCTA not available in PL
 export_census_multiple(
   geographies = setdiff(MAIN_GEOGRAPHIES, "zip code tabulation area"),
   years = 2020,
   datasets = "pl",
   formulas = unlist(all_formulas_pl),
+  output_directory = DECENNIAL_OUTPUT_DIR
+)
+
+## DHC (2020, tidycensus) ----
+
+export_census_multiple(
+  geographies = MAIN_GEOGRAPHIES,
+  years = 2020,
+  datasets = "dhc",
+  formulas = unlist(all_formulas_dhc_2020),
   output_directory = DECENNIAL_OUTPUT_DIR
 )
 
@@ -1470,11 +1651,11 @@ export_census_multiple(
   census_fetch_function = get_totalcensus
 )
 
-## ACS5 (2013-2020, tidycensus) ----
+## ACS5 (2013-2022, tidycensus) ----
 
 export_census_multiple(
   geographies = setdiff(MAIN_GEOGRAPHIES, "block"),
-  years = 2013:2020,
+  years = 2013:2022,
   datasets = "acs5",
   formulas = unlist(all_formulas_acs),
   output_directory = ACS5_OUTPUT_DIR
@@ -1484,12 +1665,12 @@ export_census_multiple(
 
 export_census_multiple(
   geographies = c("state", "county"),
-  years = c(2007:2009, 2011:2013), # TODO: 2010 is broken
+  # years = c(2007:2009, 2011:2013), # TODO: 2010 is broken
+  years = 2010,
   datasets = "acs3",
   formulas = unlist(all_formulas_acs),
   output_directory = ACS3_OUTPUT_DIR
 )
-
 
 ## ACS1 (2005, tidycensus) ----
 # B08301 + B08303 are not available in 2005
@@ -1526,14 +1707,14 @@ combine_decennial <- function(census_100,
                               output_joined,
                               output_sources) {
   message(sprintf("Reading 100%%-sample file %s", census_100))
-  census_100 <- fread(census_100)
+  census_100 <- fread(census_100, colClasses = list(character = "GEOID"))
   message(sprintf("Reading <100%%-sample file %s", census_lt_100))
-  census_lt_100 <- fread(census_lt_100)
+  census_lt_100 <- fread(census_lt_100, colClasses = list(character = "GEOID"))
   
-  columns_100 <- setdiff(names(census_100), c("year", "dataset", "GEOID"))
+  columns_100 <- setdiff(names(census_100), c("year", "GEOID"))
   columns_lt_100 <- setdiff(names(census_lt_100), names(census_100))
   
-  columns_to_keep <- c("year", "dataset", "GEOID", columns_lt_100)
+  columns_to_keep <- c("year", "GEOID", columns_lt_100)
   joined <- census_lt_100[, ..columns_to_keep][census_100, on = list(year, GEOID)]
   
   sources <- data.frame(
@@ -1555,7 +1736,7 @@ dir.create(DECENNIAL_COMBINED_OUTPUT_DIR, showWarnings = FALSE, recursive = TRUE
 ## SF1 + SF3 (2000) ----
 
 invisible(lapply(
-  setdiff(MAIN_GEOGRAPHIES, c("block", "zip code tabulation area")),
+  setdiff(MAIN_GEOGRAPHIES, c("block")),
   function(geography) {
     combine_decennial(
       census_100 = file.path(
