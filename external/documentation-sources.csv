@@ -1,0 +1,76 @@
+DESTINATION,SOURCE
+ACS5,https://www.census.gov/content/dam/Census/library/publications/2020/acs/acs_researchers_handbook_2020.pdf
+ACS5,https://www2.census.gov/programs-surveys/acs/methodology/design_and_methodology/2009/acs_design_methodology_report_2009.pdf
+ACS5,https://www2.census.gov/programs-surveys/acs/methodology/design_and_methodology/2014/acs_design_methodology_report_2014.pdf
+ACS5,https://www2.census.gov/programs-surveys/acs/methodology/design_and_methodology/2022/acs_design_methodology_report_2022.pdf
+ACS5/2009,https://api.census.gov/data/2009/acs/acs5/variables.html
+ACS5/2009,https://api.census.gov/data/2009/acs/acs5/variables.json
+ACS5/2009,https://www2.census.gov/programs-surveys/acs/summary_file/2009/documentation/5_year/user_tools/ACS2009_5-Year_TableShells.xls
+ACS5/2010,https://api.census.gov/data/2010/acs/acs5/variables.html
+ACS5/2010,https://api.census.gov/data/2010/acs/acs5/variables.json
+ACS5/2010,https://api.census.gov/data/2020/acs/acs5/variables.html
+ACS5/2010,https://api.census.gov/data/2020/acs/acs5/variables.json
+ACS5/2010,https://www2.census.gov/programs-surveys/acs/summary_file/2010/documentation/5_year/user_tools/ACS2010_5-Year_TableShells.xls
+ACS5/2011,https://api.census.gov/data/2011/acs/acs5/variables.html
+ACS5/2011,https://api.census.gov/data/2011/acs/acs5/variables.json
+ACS5/2011,https://www2.census.gov/programs-surveys/acs/summary_file/2011/documentation/5_year/user_tools/ACS2011_5-Year_TableShells.xls
+ACS5/2012,https://api.census.gov/data/2012/acs/acs5/variables.html
+ACS5/2012,https://api.census.gov/data/2012/acs/acs5/variables.json
+ACS5/2012,https://www2.census.gov/programs-surveys/acs/summary_file/2012/documentation/5_year/user_tools/ACS2012_5-Year_TableShells.xls
+ACS5/2013,https://api.census.gov/data/2013/acs/acs5/variables.html
+ACS5/2013,https://api.census.gov/data/2013/acs/acs5/variables.json
+ACS5/2013,https://www2.census.gov/programs-surveys/acs/summary_file/2013/documentation/user_tools/ACS2013_TableShells.xls
+ACS5/2014,https://api.census.gov/data/2014/acs/acs5/variables.html
+ACS5/2014,https://api.census.gov/data/2014/acs/acs5/variables.json
+ACS5/2014,https://www2.census.gov/programs-surveys/acs/summary_file/2014/documentation/user_tools/ACS2014_Table_Shells.xlsx
+ACS5/2015,https://api.census.gov/data/2015/acs/acs5/variables.html
+ACS5/2015,https://api.census.gov/data/2015/acs/acs5/variables.json
+ACS5/2015,https://www2.census.gov/programs-surveys/acs/summary_file/2015/documentation/user_tools/ACS2015_Table_Shells.xlsx
+ACS5/2016,https://api.census.gov/data/2016/acs/acs5/variables.html
+ACS5/2016,https://api.census.gov/data/2016/acs/acs5/variables.json
+ACS5/2016,https://www2.census.gov/programs-surveys/acs/summary_file/2016/documentation/user_tools/ACS2016_Table_Shells.xlsx
+ACS5/2017,https://api.census.gov/data/2017/acs/acs5/variables.html
+ACS5/2017,https://api.census.gov/data/2017/acs/acs5/variables.json
+ACS5/2017,https://www2.census.gov/programs-surveys/acs/summary_file/2017/documentation/user_tools/ACS2017_Table_Shells.xlsx
+ACS5/2018,https://api.census.gov/data/2018/acs/acs5/variables.html
+ACS5/2018,https://api.census.gov/data/2018/acs/acs5/variables.json
+ACS5/2018,https://www2.census.gov/programs-surveys/acs/summary_file/2018/documentation/user_tools/ACS2018_Table_Shells.xlsx
+ACS5/2019,https://api.census.gov/data/2019/acs/acs5/variables.html
+ACS5/2019,https://api.census.gov/data/2019/acs/acs5/variables.json
+ACS5/2019,https://www2.census.gov/programs-surveys/acs/summary_file/2019/documentation/user_tools/ACS2019_Table_Shells.xlsx
+ACS5/2020,https://www2.census.gov/programs-surveys/acs/summary_file/2020/documentation/user_tools/ACS2020_Table_Shells.xlsx
+ACS5/2021,https://api.census.gov/data/2021/acs/acs5/variables.html
+ACS5/2021,https://api.census.gov/data/2021/acs/acs5/variables.json
+ACS5/2021,https://www2.census.gov/programs-surveys/acs/summary_file/2021/sequence-based-SF/documentation/user_tools/ACS2021_Table_Shells.xlsx
+ACS5/2022,https://api.census.gov/data/2022/acs/acs5/variables.html
+ACS5/2022,https://api.census.gov/data/2022/acs/acs5/variables.json
+ACS5/2022,https://www2.census.gov/programs-surveys/acs/summary_file/2022/table-based-SF/documentation/ACS2022_Table_Shells.xlsx
+ACS5/2023,https://api.census.gov/data/2023/acs/acs5/variables.html
+ACS5/2023,https://api.census.gov/data/2023/acs/acs5/variables.json
+ACS5/2023,https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/documentation/ACS2023_Table_Shells.xlsx
+DHC 2020,https://api.census.gov/data/2020/dec/dhc/variables.html
+DHC 2020,https://api.census.gov/data/2020/dec/dhc/variables.json
+DHC 2020,https://web.archive.org/web/20240114000205if_/https://www2.census.gov/programs-surveys/decennial/2020/technical-documentation/complete-tech-docs/demographic-and-housing-characteristics-file-and-demographic-profile/2020-dhc-table-matrix.xlsx
+DHC 2020,https://web.archive.org/web/20250102193905if_/https://www2.census.gov/programs-surveys/decennial/2020/program-management/data-table-guide-dhc-dp.xlsx
+DHC 2020,https://www2.census.gov/programs-surveys/decennial/2020/technical-documentation/complete-tech-docs/demographic-and-housing-characteristics-file-and-demographic-profile/2020census-demographic-and-housing-characteristics-file-and-demographic-profile-techdoc.pdf
+P.L. 94-171 2000,https://api.census.gov/data/2020/dec/pl/variables.html
+P.L. 94-171 2000,https://api.census.gov/data/2020/dec/pl/variables.json
+P.L. 94-171 2000,https://www.census.gov/content/dam/Census/programs-surveys/rdo/TechnicalDocumentation/Census2000_pl94-171_techdoc.pdf
+P.L. 94-171 2010,https://api.census.gov/data/2020/dec/pl/variables.html
+P.L. 94-171 2010,https://api.census.gov/data/2020/dec/pl/variables.json
+P.L. 94-171 2010,https://www2.census.gov/programs-surveys/decennial/rdo/about/2010-census-programs/2010Census_pl94-171_techdoc.pdf
+P.L. 94-171 2020,https://api.census.gov/data/2020/dec/pl/variables.html
+P.L. 94-171 2020,https://api.census.gov/data/2020/dec/pl/variables.json
+P.L. 94-171 2020,https://www2.census.gov/programs-surveys/decennial/2020/technical-documentation/complete-tech-docs/summary-file/2020Census_PL94_171Redistricting_NationalTechDoc.pdf
+P.L. 94-171 2020,https://www2.census.gov/programs-surveys/decennial/2020/technical-documentation/complete-tech-docs/summary-file/2020Census_PL94_171Redistricting_StatesTechDoc_English.pdf
+P.L. 94-171 2020,https://www2.census.gov/programs-surveys/decennial/rdo/about/2020-census-program/Phase3/SupportMaterials/2020_PLSummaryFile_FieldNames.xlsx
+SF1 2000,https://api.census.gov/data/2000/dec/sf1/variables.html
+SF1 2000,https://api.census.gov/data/2000/dec/sf1/variables.json
+SF1 2000,https://www2.census.gov/programs-surveys/decennial/2000/technical-documentation/complete-tech-docs/summary-files/sf1.pdf
+SF1 2010,https://api.census.gov/data/2010/dec/sf1/variables.html
+SF1 2010,https://api.census.gov/data/2010/dec/sf1/variables.json
+SF1 2010,https://www2.census.gov/programs-surveys/decennial/2010/technical-documentation/complete-tech-docs/summary-file/sf1.pdf
+SF1 2010,https://www2.census.gov/programs-surveys/decennial/tables/2010/summary-files/sf1-crosswalk.xls
+SF3 2000,https://api.census.gov/data/2000/dec/sf3/variables.html
+SF3 2000,https://api.census.gov/data/2000/dec/sf3/variables.json
+SF3 2000,https://www2.census.gov/programs-surveys/decennial/2000/technical-documentation/complete-tech-docs/summary-files/sf3.pdf

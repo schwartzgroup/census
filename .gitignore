@@ -2,8 +2,8 @@
 *.Rproj
 *.Rhistory
 cache/
-output/
-external/tiger/
+documentation/
 external/mrlc/
+external/tiger/
+output/
 api_key.txt
-20*
